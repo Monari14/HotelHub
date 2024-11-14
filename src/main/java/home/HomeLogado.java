@@ -7,6 +7,7 @@ package home;
 import Sexao.Sexsao;
 import cadastros.CadastroHospede;
 import cadastros.CadastroQuarto;
+import cadastros.Reservas;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -41,6 +42,7 @@ public class HomeLogado extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         hospede = new javax.swing.JMenuItem();
         quarto = new javax.swing.JMenuItem();
+        reservas = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         desconectar = new javax.swing.JMenuItem();
 
@@ -63,6 +65,14 @@ public class HomeLogado extends javax.swing.JFrame {
             }
         });
         jMenu1.add(quarto);
+
+        reservas.setText("Reservas");
+        reservas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reservasActionPerformed(evt);
+            }
+        });
+        jMenu1.add(reservas);
 
         jMenuBar1.add(jMenu1);
 
@@ -88,7 +98,7 @@ public class HomeLogado extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 277, Short.MAX_VALUE)
+            .addGap(0, 281, Short.MAX_VALUE)
         );
 
         pack();
@@ -124,6 +134,13 @@ public class HomeLogado extends javax.swing.JFrame {
         j.setLocationRelativeTo(null);
     }
     }//GEN-LAST:event_desconectarActionPerformed
+
+    private void reservasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reservasActionPerformed
+        this.dispose();
+        JFrame j = new Reservas();
+        j.setVisible(true);
+        j.setLocationRelativeTo(null);
+    }//GEN-LAST:event_reservasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -167,5 +184,6 @@ public class HomeLogado extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem quarto;
+    private javax.swing.JMenuItem reservas;
     // End of variables declaration//GEN-END:variables
 }

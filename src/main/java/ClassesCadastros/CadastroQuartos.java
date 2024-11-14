@@ -33,5 +33,6 @@ public class CadastroQuartos {
             Logger.getLogger(CadastroQuartos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 
 }

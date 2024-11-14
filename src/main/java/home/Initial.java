@@ -22,6 +22,7 @@ public class Initial extends javax.swing.JFrame {
      */
     public Initial() {
         initComponents();
+        setTitle("Hotelaria");
         Connection conn = Database.getConnection();
         if (conn == null) {
             JOptionPane.showMessageDialog(rootPane, "Liga o XAMPP!");
