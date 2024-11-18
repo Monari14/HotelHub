@@ -1,4 +1,4 @@
-package DataBase;
+package Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,13 +10,13 @@ public class Database {
     public static Connection getConnection() {
         try{
             return DriverManager.getConnection(
-            "jdbc:mariadb://localhost:3306/hotelaria",
-            "root", "");
-        }   catch(SQLException ex) {
+                "jdbc:mariadb://localhost:3306/hotelaria",
+                "root", ""
+            );  
+        } catch(SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-}
     
-
+}
