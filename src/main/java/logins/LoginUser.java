@@ -13,8 +13,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 /**
  *
@@ -27,6 +31,7 @@ public class LoginUser extends javax.swing.JFrame {
      */
     public LoginUser() {
         initComponents();
+        formatarCampoCPF(edtCPF);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 JFrame j = new Initial();
@@ -45,11 +50,11 @@ public class LoginUser extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        btCadastro = new javax.swing.JButton();
+        btLogin = new javax.swing.JButton();
         edtSenha = new javax.swing.JPasswordField();
-        edtUsuario = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        edtCPF = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         user = new javax.swing.JMenuItem();
@@ -57,16 +62,16 @@ public class LoginUser extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Nome ou CPF:");
-
         jLabel4.setText("Senha");
 
-        btCadastro.setText("Login");
-        btCadastro.addActionListener(new java.awt.event.ActionListener() {
+        btLogin.setText("Login");
+        btLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCadastroActionPerformed(evt);
+                btLoginActionPerformed(evt);
             }
         });
+
+        jLabel3.setText("CPF:");
 
         jMenu1.setText("Usuário");
 
@@ -94,41 +99,41 @@ public class LoginUser extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(109, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btCadastro)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(137, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(edtSenha)
-                            .addComponent(edtUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))))
-                .addContainerGap(108, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(edtCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(edtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btLogin))
+                .addGap(122, 122, 122))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(55, Short.MAX_VALUE)
+                .addContainerGap(52, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(edtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3)
+                    .addComponent(edtCPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(edtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btCadastro)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addComponent(btLogin)
+                .addContainerGap(140, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadastroActionPerformed
-        String usuario = edtUsuario.getText();
+    private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
+        String usuario = edtCPF.getText();
         String senha = new String(edtSenha.getPassword());
 
         if (usuario.isEmpty() || senha.isEmpty()) {
@@ -146,8 +151,7 @@ public class LoginUser extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos.");
         }
-
-    }//GEN-LAST:event_btCadastroActionPerformed
+    }//GEN-LAST:event_btLoginActionPerformed
 
     private void voltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voltarActionPerformed
         this.dispose();
@@ -162,6 +166,35 @@ public class LoginUser extends javax.swing.JFrame {
         j.setVisible(true);
         j.setLocationRelativeTo(null);
     }//GEN-LAST:event_userActionPerformed
+
+    private void formatarCampoCPF(JTextField campo) {
+        try {
+            MaskFormatter cpfMask = new MaskFormatter("###.###.###-##");
+            cpfMask.setPlaceholderCharacter('_');
+
+            // Criamos um JFormattedTextField temporário com a máscara
+            JFormattedTextField formattedField = new JFormattedTextField(cpfMask);
+            formattedField.setText(campo.getText());  // Copia o texto existente (se houver)
+
+            // Substituímos o campo original pelo campo formatado
+            formattedField.setColumns(campo.getColumns());
+            formattedField.setBounds(campo.getBounds());
+            formattedField.setFont(campo.getFont());
+
+            // Remove o JTextField atual e adiciona o JFormattedTextField formatado no seu lugar
+            getContentPane().remove(campo);
+            getContentPane().add(formattedField);
+            getContentPane().revalidate();
+            getContentPane().repaint();
+
+            // Atualiza a referência para o novo campo formatado
+            this.edtCPF = formattedField;
+
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao aplicar formatação ao CPF.");
+        }
+    }
 
     private boolean autenticarUsuario(String usuario, String senha) {
         Connection conn = Database.getConnection();
@@ -229,10 +262,10 @@ public class LoginUser extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btCadastro;
+    private javax.swing.JButton btLogin;
+    private javax.swing.JTextField edtCPF;
     private javax.swing.JPasswordField edtSenha;
-    private javax.swing.JTextField edtUsuario;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
