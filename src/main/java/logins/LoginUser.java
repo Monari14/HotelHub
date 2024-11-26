@@ -4,11 +4,11 @@
  */
 package logins;
 
-import Database.Database;
+import DataBase.Database;
 import Sexao.Sexsao;
 import cadastros.CadastroUser;
-import home.HomeLogado;
-import home.Initial;
+import home.HotelHub;
+import home.HotelHubInitial;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +34,7 @@ public class LoginUser extends javax.swing.JFrame {
         formatarCampoCPF(edtCPF);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new Initial();
+                JFrame j = new HotelHubInitial();
                 j.setVisible(true);
                 j.setLocationRelativeTo(null);
             }
@@ -145,7 +145,7 @@ public class LoginUser extends javax.swing.JFrame {
             Sexsao.setUsuarioLogado(usuario);
             JOptionPane.showMessageDialog(this, "Login realizado com sucesso!");
             this.dispose();
-            JFrame j = new HomeLogado();
+            JFrame j = new HotelHub();
             j.setVisible(true);
             j.setLocationRelativeTo(null);
         } else {
@@ -155,7 +155,7 @@ public class LoginUser extends javax.swing.JFrame {
 
     private void voltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voltarActionPerformed
         this.dispose();
-        JFrame j = new Initial();
+        JFrame j = new HotelHubInitial();
         j.setVisible(true);
         j.setLocationRelativeTo(null);
     }//GEN-LAST:event_voltarActionPerformed

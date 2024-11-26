@@ -1,8 +1,8 @@
 package cadastros;
 
-import ClassesCadastros.CadastroUsuarios;
-import Database.Database;
-import home.Initial;
+import Classes.Usuarios;
+import DataBase.Database;
+import home.HotelHubInitial;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +24,7 @@ public class CadastroUser extends javax.swing.JFrame {
         formatarCampoCPF(edtCPF);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new Initial();
+                JFrame j = new HotelHubInitial();
                 j.setVisible(true);
                 j.setLocationRelativeTo(null);
             }
@@ -143,7 +143,7 @@ public class CadastroUser extends javax.swing.JFrame {
         String cpf = edtCPF.getText();
         String senha = new String(edtSenha.getPassword());
 
-        var c = new CadastroUsuarios(nome, idadeS, cpf, senha);
+        var c = new Usuarios(nome, idadeS, cpf, senha);
         if (!nome.isEmpty() && !idadeS.isEmpty() && !cpf.isEmpty() && !senha.isEmpty()) {
             if (usuarioExist(nome, cpf)) {
                 JOptionPane.showMessageDialog(rootPane, "Usuário " + nome + " já está Cadastrado!");
@@ -166,7 +166,7 @@ public class CadastroUser extends javax.swing.JFrame {
 
     private void voltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voltarActionPerformed
         this.dispose();
-        JFrame j = new Initial();
+        JFrame j = new HotelHubInitial();
         j.setVisible(true);
         j.setLocationRelativeTo(null);
     }//GEN-LAST:event_voltarActionPerformed
@@ -184,7 +184,7 @@ public class CadastroUser extends javax.swing.JFrame {
                 existe = rs.getInt(1) > 0;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CadastroUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Usuarios.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (conn != null) {
