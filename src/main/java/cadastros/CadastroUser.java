@@ -1,7 +1,7 @@
 package cadastros;
 
 import Classes.Usuarios;
-import DataBase.Database;
+import Database.Database;
 import home.HotelHubInitial;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

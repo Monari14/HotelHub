@@ -1,6 +1,6 @@
 package logins;
 
-import DataBase.Database;
+import Database.Database;
 import Sexao.Sexsao;
 import cadastros.CadastroUser;
 import home.HotelHubInitial;

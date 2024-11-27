@@ -1,6 +1,6 @@
 package Sexao;
 
-import DataBase.Database;  // Importando a classe Database para obter a conexão com o banco de dados.
+import Database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,6 +1,6 @@
 package home;
 
-import DataBase.Database;
+import Database.Database;
 import cadastros.CadastroUser;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Connection;

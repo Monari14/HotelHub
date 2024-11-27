@@ -1,7 +1,7 @@
 package cadastros;
 
 import Classes.Hospedes;
-import DataBase.Database;
+import Database.Database;
 import Sexao.Sexsao;
 import home.HotelHubLogado;
 import java.sql.Connection;
