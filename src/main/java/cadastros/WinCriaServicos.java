@@ -1,84 +1,49 @@
 package cadastros;
 
+import Classes.Quartos;
 import Classes.Servicos;
-import home.HotelHub;
-import javax.swing.JFrame;
+import DataBase.Database;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class WinCriaServicos extends javax.swing.JFrame {
 
+    private DefaultTableModel tabelaServicos = new DefaultTableModel(new Object[]{"Tipo", "Preço"}, 0);
+
     public WinCriaServicos() {
         initComponents();
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new HotelHub();
-                j.setVisible(true);
-                j.setLocationRelativeTo(null);
-            }
-        });
+        listaServicos();
+        setTitle("Cadastro de Serviços");
+        setLocationRelativeTo(null);
     }
 
-    private void carregaTabela() {
-        try {
-            String[] colunasQ = {"Tipo", "preco"};
-
-            Servicos servico = new Servicos();
-
-            String[][] servicos = servico.ler();
-
-            DefaultTableModel tableModelS = new DefaultTableModel(servicos, colunasQ);
-            tableModelS.setColumnIdentifiers(colunasQ);
-
-            tableModelS.setRowCount(0);
-            for (String[] linha : servicos) {
-                tableModelS.addRow(linha);
-            }
-
-            tblCriaServicos.setModel(tableModelS);
-        } catch (Exception e) {
-
-        }
-    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblCriaServicos = new javax.swing.JTable();
-        txtValorS = new javax.swing.JTextField();
+        edtValor = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         btnAdicionarServicos = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        txtTipoS = new javax.swing.JTextField();
+        edtTipo = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        servicos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setSize(new java.awt.Dimension(600, 500));
 
         jLabel5.setText("Valor:");
 
-        jScrollPane1.setForeground(new java.awt.Color(0, 0, 0));
-
-        tblCriaServicos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Tipo", "Valor"
-            }
-        ));
-        tblCriaServicos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tblCriaServicos.setDoubleBuffered(true);
-        jScrollPane1.setViewportView(tblCriaServicos);
-
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
-
-        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\WESLEYLUCASMOREIRA\\Documents\\mini hotel.jpg")); // NOI18N
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("ADICIONAR SERVIÇOS");
@@ -115,11 +80,8 @@ public class WinCriaServicos extends javax.swing.JFrame {
 
         jLabel2.setText("Tipo:");
 
-        txtTipoS.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTipoSActionPerformed(evt);
-            }
-        });
+        servicos.setModel(tabelaServicos);
+        jScrollPane2.setViewportView(servicos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,39 +90,41 @@ public class WinCriaServicos extends javax.swing.JFrame {
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAdicionarServicos, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                    .addComponent(txtTipoS)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel5))
+                        .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtValorS))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(edtTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(edtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAdicionarServicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTipoS, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtValorS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(118, 118, 118)
                         .addComponent(jLabel3)
-                        .addGap(27, 27, 27)
-                        .addComponent(btnAdicionarServicos)
-                        .addGap(0, 162, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(edtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(edtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnAdicionarServicos))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -170,40 +134,93 @@ public class WinCriaServicos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAdicionarServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarServicosActionPerformed
-        Classes.Servicos servico = new Classes.Servicos();
-        String tipo = txtTipoS.getText();
-        double preco = Double.parseDouble(txtValorS.getText());
+        String tipo = edtTipo.getText();
+        String precoS = edtValor.getText();
 
-        servico.setTipo(tipo);
-        servico.setPreco(preco);
+        var s = new Servicos(tipo, precoS);
 
-        servico.criar();
-        carregaTabela();
+        if (!tipo.isEmpty() && !precoS.isEmpty()) {
+            if (servicoExist(tipo)) {
+                JOptionPane.showMessageDialog(rootPane, "O serviço: " + tipo + " já está Cadastrado!");
+                return;
+            } else {
+                double precoD = Double.parseDouble(precoS);
+                s.inserirServicos(tipo, precoD);
+                JOptionPane.showMessageDialog(rootPane, "Serviço: " + tipo + " foi Adicionado com Sucesso!");
+                listaServicos();
+            }
+
+        }
     }//GEN-LAST:event_btnAdicionarServicosActionPerformed
 
-    private void txtTipoSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTipoSActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTipoSActionPerformed
+    public void listaServicos() {
+        Connection conn = Database.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
 
-    public static void main(String args[]) {
+            String sql = "SELECT tipo, preco FROM servicos";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            DefaultTableModel model = (DefaultTableModel) servicos.getModel();
+
+            model.setRowCount(0);
+
+            while (rs.next()) {
+                String tipo = rs.getString("tipo");
+                double preco = rs.getDouble("preco");
+
+                model.addRow(new Object[]{tipo, "R$" + preco});
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean servicoExist(String numero) {
+        Connection conn = Database.getConnection();
+        boolean existe = false;
 
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM servicos WHERE tipo = ?");
+            stmt.setString(1, numero);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                existe = rs.getInt(1) > 0;
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(WinCriaServicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(WinCriaServicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(WinCriaServicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(WinCriaServicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
+        return existe;
+    }
+
+    public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinCriaServicos().setVisible(true);
@@ -213,15 +230,15 @@ public class WinCriaServicos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdicionarServicos;
+    private javax.swing.JTextField edtTipo;
+    private javax.swing.JTextField edtValor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblCriaServicos;
-    private javax.swing.JTextField txtTipoS;
-    private javax.swing.JTextField txtValorS;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable servicos;
     // End of variables declaration//GEN-END:variables
 }

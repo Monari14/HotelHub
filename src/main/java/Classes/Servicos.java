@@ -3,64 +3,32 @@ package Classes;
 import DataBase.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Servicos {
-    String tipo;
-    double preco;
 
-    public String getTipo() {
-        return tipo;
-    }
+    private String tipo, preco;
 
-    public void setTipo(String tipo) {
+    public Servicos(String tipo, String preco) {
         this.tipo = tipo;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(double preco) {
         this.preco = preco;
     }
-    public void criar() {
-        String sql = "INSERT INTO servicos (tipo,  preco) VALUES (?, ?)";
-        try (Connection conn = Database.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, this.tipo);
-            pstmt.setDouble(2, this.preco);
-            
-            pstmt.execute();
+
+    public void inserirServicos(String tipo, double preco) {
+        Connection conn = Database.getConnection();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO servicos (tipo, preco) VALUES (?, ?)");
+            stmt.setString(1, tipo);
+            stmt.setDouble(2, preco);
+
+            stmt.execute();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Servicos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
     }
-        public String[][] ler() {
-        String sql = "SELECT * FROM servicos";
-        List<String[]> linhas = new ArrayList<>();
-        
-        try(Connection conn = Database.getConnection(); PreparedStatement pstm = conn.prepareStatement(sql); ResultSet rs = pstm.executeQuery()) {
-            int colunas = rs.getMetaData().getColumnCount();
-            
-            while (rs.next()) {
-                String[] linha = new String[colunas];
-                for (int i = 1; i <= colunas; i++) {
-                    linha[i - 1] = rs.getString(i);
-                }
-                linhas.add(linha);
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        String[][] resultado = new String[linhas.size()][];
-        resultado = linhas.toArray(resultado);
-        
-        return resultado;
-    }
+    
+
 }

@@ -3,16 +3,13 @@ package Classes;
 import DataBase.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Quartos {
-    String tipo, numero;
-    double preco;
-    boolean disponivel;
+
+    private String tipo, numero, preco, disponivel;
 
     public String getTipo() {
         return tipo;
@@ -30,58 +27,67 @@ public class Quartos {
         this.numero = numero;
     }
 
-    public double getPreco() {
+    public String getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(String preco) {
         this.preco = preco;
     }
 
-    public boolean isDisponivel() {
+    public String getDisponivel() {
         return disponivel;
     }
 
-    public void setDisponivel(boolean disponivel) {
+    public void setDisponivel(String disponivel) {
         this.disponivel = disponivel;
     }
-    public void criar() {
-        String sql = "INSERT INTO quartos (numero, tipo, disponivel, preco) VALUES (?, ?, ?, ?)";
-        try (Connection conn = Database.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, this.numero);
-            pstmt.setString(2, this.tipo);
-            pstmt.setBoolean(3, this.disponivel);
-            pstmt.setDouble(4, this.preco);
-            
-            pstmt.execute();
+
+    public void inserirQuarto(String tipo, String numero, double preco, String disponivel) {
+        Connection conn = Database.getConnection();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO quartos (tipo, numero, preco, disponivel) VALUES (?, ?, ?, ?)");
+            stmt.setString(1, tipo);
+            stmt.setString(2, numero);
+            stmt.setDouble(3, preco);
+            stmt.setString(4, disponivel);
+
+            stmt.execute();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
     }
-        public String[][] ler() {
-        String sql = "SELECT * FROM quartos";
-        List<String[]> linhas = new ArrayList<>();
-        
-        try(Connection conn = Database.getConnection(); PreparedStatement pstm = conn.prepareStatement(sql); ResultSet rs = pstm.executeQuery()) {
-            int colunas = rs.getMetaData().getColumnCount();
-            
-            while (rs.next()) {
-                String[] linha = new String[colunas];
-                for (int i = 1; i <= colunas; i++) {
-                    linha[i - 1] = rs.getString(i);
+
+    public void atualizarDisponibilidade(String numero, String disponivel) {
+        Connection conn = Database.getConnection();
+        PreparedStatement stmt = null;
+        try {
+            // Comando SQL para atualizar apenas o campo "disponivel"
+            stmt = conn.prepareStatement("UPDATE quartos SET disponivel = ? WHERE numero = ?");
+            stmt.setString(1, disponivel); // Novo valor para "disponivel"
+            stmt.setString(2, numero);    // Critério para identificar o quarto (número)
+
+            // Executa o comando de atualização
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+            } else {
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // Fechar os recursos
+            try {
+                if (stmt != null) {
+                    stmt.close();
                 }
-                linhas.add(linha);
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        String[][] resultado = new String[linhas.size()][];
-        resultado = linhas.toArray(resultado);
-        
-        return resultado;
     }
+
 }
-    
