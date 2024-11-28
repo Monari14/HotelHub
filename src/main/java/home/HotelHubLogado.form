@@ -9,17 +9,9 @@
             <Property name="text" type="java.lang.String" value="HotelHub"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="hospedes">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="H&#xf3;spedes"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hospedesActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="quartos">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Quartos"/>
+                <Property name="text" type="java.lang.String" value="Quartos e Servi&#xe7;os"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quartosActionPerformed"/>
@@ -31,14 +23,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reservasActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="servicos">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Servicos"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="servicosActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="quartosReservados">
