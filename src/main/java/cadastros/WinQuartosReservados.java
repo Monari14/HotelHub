@@ -1,13 +1,15 @@
-
 package cadastros;
 
 import Database.Database;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 public class WinQuartosReservados extends javax.swing.JFrame {
+
     private DefaultTableModel tabelaQuartosReservados = new DefaultTableModel(new Object[]{"Hóspede", "Quarto", "Valor", "Entrada - Saída"}, 0);
 
     public WinQuartosReservados() {
@@ -33,6 +35,8 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         jScrollPane2.setViewportView(quartosReservados);
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
+
+        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -80,7 +84,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(57, Short.MAX_VALUE)))
+                    .addContainerGap(76, Short.MAX_VALUE)))
         );
 
         pack();
@@ -106,7 +110,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
                 double valor = rs.getDouble("valor");
                 String data_entrada = rs.getString("data_entrada");
                 String data_saida = rs.getString("data_saida");
-                model.addRow(new Object[]{hospede, "N°"+quarto, "R$"+valor, data_entrada + " - " + data_saida});
+                model.addRow(new Object[]{hospede, "N°" + quarto, "R$" + valor, data_entrada + " - " + data_saida});
             }
 
         } catch (Exception e) {
@@ -127,7 +131,13 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             }
         }
     }
+
     public static void main(String args[]) {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinQuartosReservados().setVisible(true);

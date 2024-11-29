@@ -3,9 +3,7 @@ package adm;
 
 import Database.Database;
 import Sexao.Sexsao;
-import cadastros.WinQuartosReservados;
-import cadastros.WinQuartosServicos;
-import cadastros.WinReservas;
+import com.formdev.flatlaf.FlatLightLaf;
 import home.HotelHubInitial;
 import home.HotelHubLogado;
 import java.sql.Connection;
@@ -13,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 public class WinListaFuncionarios extends javax.swing.JFrame {
@@ -24,13 +23,6 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         listaFuncionarios();
         setTitle("Lista de Funcionários");
         setLocationRelativeTo(null);
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new WinAdmLogado();
-                j.setVisible(true);
-                j.setLocationRelativeTo(null);
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")
@@ -43,20 +35,13 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         funcionarios = new javax.swing.JTable();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        quartos = new javax.swing.JMenuItem();
-        reservas = new javax.swing.JMenuItem();
-        quartosReservados = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        desconectar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("ADICIONAR QUARTO E SERVIÇOS");
+        jLabel1.setText("FUNCIONÁRIOS");
 
         jLabel6.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
 
@@ -90,48 +75,6 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         funcionarios.setModel(tabelaFuncionarios);
         jScrollPane2.setViewportView(funcionarios);
 
-        jMenu1.setText("HotelHub");
-
-        quartos.setText("Quartos e Serviços");
-        quartos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quartosActionPerformed(evt);
-            }
-        });
-        jMenu1.add(quartos);
-
-        reservas.setText("Reservas");
-        reservas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reservasActionPerformed(evt);
-            }
-        });
-        jMenu1.add(reservas);
-
-        quartosReservados.setText("Quartos Reservados");
-        quartosReservados.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quartosReservadosActionPerformed(evt);
-            }
-        });
-        jMenu1.add(quartosReservados);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Sair");
-
-        desconectar.setText("Desconectar");
-        desconectar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                desconectarActionPerformed(evt);
-            }
-        });
-        jMenu2.add(desconectar);
-
-        jMenuBar1.add(jMenu2);
-
-        setJMenuBar(jMenuBar1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,8 +88,8 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -154,34 +97,11 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void quartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quartosActionPerformed
-        JFrame j = new WinQuartosServicos(); // Open room management
-        j.setVisible(true);
-        j.setLocationRelativeTo(null);
-    }//GEN-LAST:event_quartosActionPerformed
-
-    private void reservasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reservasActionPerformed
-        JFrame j = new WinReservas(); // Open reservation management
-        j.setVisible(true);
-        j.setLocationRelativeTo(null);
-    }//GEN-LAST:event_reservasActionPerformed
-
-    private void quartosReservadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quartosReservadosActionPerformed
-        JFrame j = new WinQuartosReservados(); // Open service management
-        j.setVisible(true);
-        j.setLocationRelativeTo(null);
-    }//GEN-LAST:event_quartosReservadosActionPerformed
-
-    private void desconectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desconectarActionPerformed
-        desconect();
-    }//GEN-LAST:event_desconectarActionPerformed
-
     public void listaFuncionarios() {
         Connection conn = Database.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-
             String sql = "SELECT nome, idade, cpf, is_adm FROM usuarios";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
@@ -260,8 +180,11 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinListaFuncionarios().setVisible(true);
             }
@@ -269,18 +192,11 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem desconectar;
     private javax.swing.JTable funcionarios;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JMenuItem quartos;
-    private javax.swing.JMenuItem quartosReservados;
-    private javax.swing.JMenuItem reservas;
     // End of variables declaration//GEN-END:variables
 }

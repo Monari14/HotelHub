@@ -3,6 +3,7 @@ package cadastros;
 import Classes.Quartos;
 import Classes.Servicos;
 import Database.Database;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 public class WinQuartosServicos extends javax.swing.JFrame {
@@ -384,7 +386,11 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
-
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinQuartosServicos().setVisible(true);

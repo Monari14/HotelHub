@@ -4,6 +4,7 @@ import Database.Database;
 import Sexao.Sexsao;
 import adm.WinAdmLogado;
 import cadastros.CadastroUser;
+import com.formdev.flatlaf.FlatLightLaf;
 import home.HotelHubInitial;
 import home.HotelHubLogado;
 import java.sql.Connection;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 public class LoginUser extends javax.swing.JFrame {
 
@@ -64,7 +66,7 @@ public class LoginUser extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
-        jMenu1.setText("Usuário");
+        jMenu1.setText("HotelHub");
 
         user.setText("Cadastro de Usuários");
         user.addActionListener(new java.awt.event.ActionListener() {
@@ -213,8 +215,11 @@ public class LoginUser extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginUser().setVisible(true);
             }

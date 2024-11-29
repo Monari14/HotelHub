@@ -2,6 +2,7 @@ package cadastros;
 
 import Classes.Usuarios;
 import Database.Database;
+import com.formdev.flatlaf.FlatLightLaf;
 import home.HotelHubInitial;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import logins.LoginUser;
 
 public class CadastroUser extends javax.swing.JFrame {
@@ -80,7 +82,7 @@ public class CadastroUser extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
-        jMenu1.setText("Usuário");
+        jMenu1.setText("HotelHub");
 
         user.setText("Login de Usuários");
         user.addActionListener(new java.awt.event.ActionListener() {
@@ -263,6 +265,11 @@ public class CadastroUser extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new CadastroUser().setVisible(true);

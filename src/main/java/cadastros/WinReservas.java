@@ -6,6 +6,7 @@ import Classes.QuartosReservados;
 import Classes.Reservas;
 import Database.Database;
 import Sexao.Sexsao;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 public class WinReservas extends javax.swing.JFrame {
@@ -333,7 +336,7 @@ public class WinReservas extends javax.swing.JFrame {
                 double valorFinal = (diasReservados * valorQuartoD) + valorServicoD;
                 // Verificando se o quarto já está reservado
                 if (reservaExist(quarto)) {
-                    JOptionPane.showMessageDialog(rootPane, "Por algum motivo o quarto N°" + numeroQuarto + " já está reservado.");
+                    JOptionPane.showMessageDialog(rootPane, "Quarto N°" + numeroQuarto + " já está reservado.");
                     return;
                 } else {
                     if (!isEmailValido(email)) {
@@ -361,6 +364,9 @@ public class WinReservas extends javax.swing.JFrame {
                                 var q = new Quartos();
                                 q.atualizarDisponibilidade(numeroQuarto, "Indisponível");
                                 this.dispose();
+                                JFrame j = new WinPagamentos(); // Open room management
+                                j.setVisible(true);
+                                j.setLocationRelativeTo(null);
                             }
                         }
                     }
@@ -565,6 +571,11 @@ public class WinReservas extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinReservas().setVisible(true);
