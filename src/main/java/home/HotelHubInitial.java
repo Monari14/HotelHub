@@ -17,7 +17,6 @@ public class HotelHubInitial extends javax.swing.JFrame {
         initComponents();
         setTitle("Hotelaria"); // Set the window title.
         Connection conn = Database.getConnection(); // Get the database connection.
-
         if (conn == null) { // If the connection fails, show an error message and exit.
             JOptionPane.showMessageDialog(rootPane, "Liga o XAMPP!"); // Prompt to start XAMPP.
             System.exit(0); // Close the application.
@@ -39,7 +38,7 @@ public class HotelHubInitial extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

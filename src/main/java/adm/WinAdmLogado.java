@@ -19,13 +19,14 @@ import javax.swing.JOptionPane;
  */
 public class WinAdmLogado extends javax.swing.JFrame {
 
-    /**
-     * Creates new form WinAdmLogado
-     */
     public WinAdmLogado() {
         initComponents();
-        setTitle("Administrador(a): " + Sexsao.getNomePorCpf());
-
+        setTitle("Administrador(a) Logado(a): " + Sexsao.getNomePorCpf());
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                desconect();
+            }
+        });
     }
 
     /**
@@ -55,7 +56,7 @@ public class WinAdmLogado extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setPreferredSize(new java.awt.Dimension(1084, 569));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -167,7 +168,7 @@ public class WinAdmLogado extends javax.swing.JFrame {
     }//GEN-LAST:event_quartosReservadosActionPerformed
 
     public void desconect() {
-        int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja desconectar " + Sexsao.getNomePorCpf() +"?", "Desconectar", JOptionPane.YES_NO_OPTION);
+        int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja desconectar " + Sexsao.getNomePorCpf() + "?", "Desconectar", JOptionPane.YES_NO_OPTION);
 
         if (resposta == JOptionPane.YES_OPTION) {
             // Mensagem de confirmação
@@ -177,13 +178,14 @@ public class WinAdmLogado extends javax.swing.JFrame {
             JFrame j = new HotelHubInitial();
             j.setVisible(true);
             j.setLocationRelativeTo(null);
-        }else{
+        } else {
             // Chama a tela logado
-            JFrame j = new HotelHubLogado();
+            JFrame j = new WinAdmLogado();
             j.setVisible(true);
             j.setLocationRelativeTo(null);
         }
     }
+
     /**
      * @param args the command line arguments
      */

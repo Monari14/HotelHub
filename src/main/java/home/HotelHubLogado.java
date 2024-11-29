@@ -1,21 +1,18 @@
 package home;
 
 import Sexao.Sexsao;
-import com.formdev.flatlaf.FlatLightLaf;
 import cadastros.WinQuartosServicos;
 import cadastros.WinQuartosReservados;
 import cadastros.WinReservas;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 public class HotelHubLogado extends javax.swing.JFrame {
 
     public HotelHubLogado() {
         initComponents(); // Initialize UI components
-        setTitle("Funcionário: " + Sexsao.getNomePorCpf());
+        setTitle("Funcionário Logado: " + Sexsao.getNomePorCpf());
         setLocationRelativeTo(null);
-
         // Add a window listener for when the window is closed
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -42,7 +39,7 @@ public class HotelHubLogado extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

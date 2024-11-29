@@ -7,6 +7,8 @@ import Classes.Reservas;
 import Database.Database;
 import Sexao.Sexsao;
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class WinReservas extends javax.swing.JFrame {
 
-    private DefaultTableModel tabelaReservas = new DefaultTableModel(new Object[]{"Hóspede", "Quarto", "Serviços", "Entrada", "Saída", "Total"}, 0);
+    private DefaultTableModel tabelaReservas = new DefaultTableModel(new Object[]{"ID", "Hóspede", "Quarto", "Serviços", "Entrada", "Saída", "Total"}, 0);
 
     public WinReservas() {
         initComponents();
@@ -35,6 +37,32 @@ public class WinReservas extends javax.swing.JFrame {
         listaReservas();
         listaServicos();
         setLocationRelativeTo(null);
+
+        // Exclui linhas selecionadas
+        JTreservas.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    int selectedRow = JTreservas.getSelectedRow(); // Obtém a linha selecionada
+                    if (selectedRow != -1) {
+                        // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
+                        int id = Integer.parseInt(JTreservas.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
+
+                        // Excluindo o item do banco de dados
+                        excluirPelaTabelaR(id);
+
+                        // Removendo a linha da tabela
+                        DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
+                        model.removeRow(selectedRow);
+
+                        // Exibir uma mensagem de sucesso ou atualizar a interface
+                        JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                    }
+                }
+            }
+        });
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -64,7 +92,7 @@ public class WinReservas extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         edtCPF = new javax.swing.JFormattedTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        reservas = new javax.swing.JTable();
+        JTreservas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -83,7 +111,7 @@ public class WinReservas extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("RESERVAS");
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -241,8 +269,8 @@ public class WinReservas extends javax.swing.JFrame {
                 .addContainerGap(88, Short.MAX_VALUE))
         );
 
-        reservas.setModel(tabelaReservas);
-        jScrollPane2.setViewportView(reservas);
+        JTreservas.setModel(tabelaReservas);
+        jScrollPane2.setViewportView(JTreservas);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -293,7 +321,34 @@ public class WinReservas extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+    private void cleanTextQ() {
+        edtNome.setText("");
+        edtCPF.setText("");
+        edtIdade.setText("");
+        edtEmail.setText("");
 
+        txtDataEntrada.setText("");
+        txtDataSaida.setText("");
+    }
+
+    private static void excluirPelaTabelaR(int id) {
+        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
+            String query = "DELETE FROM quartosreservados WHERE id_quartoReservado = ?";  // SQL para excluir com base no id_sabor
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);  // Define o valor do placeholder (id)
+
+            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+
+            if (rowsAffected > 0) {
+                System.out.println("Dados excluídos do banco de dados!");
+            } else {
+                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
+    }
     private void btReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btReservarActionPerformed
         String nome = edtNome.getText();
         String idadeS = edtIdade.getText();
@@ -408,21 +463,22 @@ public class WinReservas extends javax.swing.JFrame {
         return existe;
     }
 
-    public void listaReservas() {
+        public void listaReservas() {
         Connection conn = Database.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
 
-            String sql = "SELECT hospede, quarto, servico, data_entrada, data_saida, total FROM reservas";
+            String sql = "SELECT id_reserva, hospede, quarto, servico, data_entrada, data_saida, total FROM reservas";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
 
-            DefaultTableModel model = (DefaultTableModel) reservas.getModel();
+            DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
 
             model.setRowCount(0);
 
             while (rs.next()) {
+                int id_reserva = rs.getInt("id_reserva");
                 String hospede = rs.getString("hospede");
                 String quarto = rs.getString("quarto");
                 String servico = rs.getString("servico");
@@ -430,7 +486,7 @@ public class WinReservas extends javax.swing.JFrame {
                 String data_saida = rs.getString("data_saida");
                 String total = rs.getString("total");
 
-                model.addRow(new Object[]{hospede, quarto, servico, data_entrada, data_saida, "R$" + total});
+                model.addRow(new Object[]{id_reserva, hospede, quarto, servico, data_entrada, data_saida, "R$" + total});
             }
 
         } catch (Exception e) {
@@ -584,6 +640,7 @@ public class WinReservas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable JTreservas;
     private javax.swing.JButton btReservar;
     private javax.swing.JComboBox<String> comboQuartos;
     private javax.swing.JComboBox<String> comboServicos;
@@ -607,7 +664,6 @@ public class WinReservas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable reservas;
     private javax.swing.JFormattedTextField txtDataEntrada;
     private javax.swing.JFormattedTextField txtDataSaida;
     // End of variables declaration//GEN-END:variables

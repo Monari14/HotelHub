@@ -1,4 +1,3 @@
-
 package adm;
 
 import Database.Database;
@@ -6,6 +5,8 @@ import Sexao.Sexsao;
 import com.formdev.flatlaf.FlatLightLaf;
 import home.HotelHubInitial;
 import home.HotelHubLogado;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,13 +17,64 @@ import javax.swing.table.DefaultTableModel;
 
 public class WinListaFuncionarios extends javax.swing.JFrame {
 
-    private DefaultTableModel tabelaFuncionarios = new DefaultTableModel(new Object[]{"Nome", "Idade", "CPF", "Administrador(a)"}, 0);
+    private DefaultTableModel tabelaFuncionarios = new DefaultTableModel(new Object[]{"ID", "Nome", "Idade", "CPF", "Administrador(a)"}, 0);
 
     public WinListaFuncionarios() {
         initComponents();
         listaFuncionarios();
         setTitle("Lista de Funcionários");
         setLocationRelativeTo(null);
+        // Exclui linhas selecionadas
+        funcionarios.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    int selectedRow = funcionarios.getSelectedRow(); // Obtém a linha selecionada
+
+                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir este Funcionário?", "Exclusão", JOptionPane.YES_NO_OPTION);
+
+                    if (resposta == JOptionPane.YES_OPTION) {
+                        if (selectedRow != -1) {
+                            // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
+                            int id = Integer.parseInt(funcionarios.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
+
+                            // Excluindo o item do banco de dados
+                            excluirPelaTabelaR(id);
+
+                            // Removendo a linha da tabela
+                            DefaultTableModel model = (DefaultTableModel) funcionarios.getModel();
+                            model.removeRow(selectedRow);
+
+                            // Exibir uma mensagem de sucesso ou atualizar a interface
+                            JOptionPane.showMessageDialog(null, "Funcionário excluído com sucesso.");
+                            listaFuncionarios();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                        }
+                    }
+                }
+            }
+        }
+        );
+    }
+
+    private static void excluirPelaTabelaR(int id) {
+        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
+            String query = "DELETE FROM usuarios WHERE id_usuario = ?";  // SQL para excluir com base no id_sabor
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);  // Define o valor do placeholder (id)
+
+            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+
+            if (rowsAffected > 0) {
+                System.out.println("Dados excluídos do banco de dados!");
+            } else {
+                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +154,7 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT nome, idade, cpf, is_adm FROM usuarios";
+            String sql = "SELECT id_usuario, nome, idade, cpf, is_adm FROM usuarios";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
 
@@ -111,12 +163,13 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
             model.setRowCount(0);
 
             while (rs.next()) {
+                int id = rs.getInt("id_usuario");
                 String nome = rs.getString("nome");
                 String idade = rs.getString("idade");
                 String cpf = rs.getString("cpf");
                 String is_adm = rs.getString("is_adm");
 
-                model.addRow(new Object[]{nome, idade, cpf, is_adm});
+                model.addRow(new Object[]{id, nome, idade, cpf, is_adm});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,7 +237,8 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception e) {
             e.printStackTrace();
-        }        java.awt.EventQueue.invokeLater(new Runnable() {
+        }
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinListaFuncionarios().setVisible(true);
             }
