@@ -20,13 +20,6 @@ public class CadastroUser extends javax.swing.JFrame {
     // ADICIONAR FORMATADORES E VALIDAÇÃO
     public CadastroUser() {
         initComponents();
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new HotelHubInitial();
-                j.setVisible(true);
-                j.setLocationRelativeTo(null);
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")
@@ -44,9 +37,9 @@ public class CadastroUser extends javax.swing.JFrame {
         edtCPF = new javax.swing.JFormattedTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        user = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Nome:");
@@ -82,16 +75,7 @@ public class CadastroUser extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
-        jMenu1.setText("HotelHub");
-
-        user.setText("Login de Usuários");
-        user.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userActionPerformed(evt);
-            }
-        });
-        jMenu1.add(user);
-
+        jMenu1.setText("Cadastro");
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -219,13 +203,6 @@ public class CadastroUser extends javax.swing.JFrame {
         return true;
     }
 
-    private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
-        this.dispose(); // Close current window
-        JFrame j = new LoginUser(); // Open login window
-        j.setVisible(true);
-        j.setLocationRelativeTo(null);
-    }//GEN-LAST:event_userActionPerformed
-
     // Check if user already exists in the database
     private static boolean usuarioExist(String cpf) {
         Connection conn = null;
@@ -289,6 +266,5 @@ public class CadastroUser extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem user;
     // End of variables declaration//GEN-END:variables
 }

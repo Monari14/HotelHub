@@ -68,7 +68,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("ADICIONAR QUARTO E SERVIÇOS");
@@ -92,7 +92,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 12, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18))
                     .addGroup(jPanel3Layout.createSequentialGroup()

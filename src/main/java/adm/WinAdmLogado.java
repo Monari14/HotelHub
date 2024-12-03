@@ -56,7 +56,7 @@ public class WinAdmLogado extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setPreferredSize(new java.awt.Dimension(1084, 569));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
