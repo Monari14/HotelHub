@@ -6,7 +6,6 @@ import Classes.QuartosReservados;
 import Classes.Reservas;
 import Database.Database;
 import Sexao.Sexsao;
-import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
@@ -21,43 +20,42 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 public class WinReservas extends javax.swing.JFrame {
 
-    private DefaultTableModel tabelaReservas = new DefaultTableModel(new Object[]{"ID", "Hóspede", "Quarto", "Serviços", "Entrada", "Saída", "Total"}, 0);
+    private DefaultTableModel tabelaReservas = new DefaultTableModel(new Object[]{"ID", "Hóspede", "Quarto", "Serviços", "Entrada", "Saída", "Total", "Pagamento"}, 0);
 
     public WinReservas() {
         initComponents();
-        setTitle("Reserva de Quartos!");
-        listaQuartos();
-        listaReservas();
-        listaServicos();
-        setLocationRelativeTo(null);
+        setTitle("Reserva de Quartos!");  // Set the window title
+        listaQuartos();  // List available rooms
+        listaReservas();  // List current reservations
+        listaServicos();  // List available services
+        setLocationRelativeTo(null);  // Center the window on the screen
 
-        // Exclui linhas selecionadas
+        // Add functionality to delete selected reservations with the Delete key
         JTreservas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    int selectedRow = JTreservas.getSelectedRow(); // Obtém a linha selecionada
-                    if (selectedRow != -1) {
-                        // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
-                        int id = Integer.parseInt(JTreservas.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {  // Check if the Delete key was pressed
+                    int selectedRow = JTreservas.getSelectedRow();  // Get selected row
+                    if (selectedRow != -1) {  // Check if a row is selected
+                        // Get the ID of the selected reservation
+                        int id = Integer.parseInt(JTreservas.getValueAt(selectedRow, 0).toString());
 
-                        // Excluindo o item do banco de dados
+                        // Call the function to delete the reservation from the database
                         excluirPelaTabelaR(id);
 
-                        // Removendo a linha da tabela
+                        // Remove the selected row from the table
                         DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
                         model.removeRow(selectedRow);
 
-                        // Exibir uma mensagem de sucesso ou atualizar a interface
+                        // Show a message indicating successful deletion
                         JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
                     } else {
+                        // If no row is selected, show a message
                         JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                     }
                 }
@@ -70,10 +68,8 @@ public class WinReservas extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btReservar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -91,10 +87,13 @@ public class WinReservas extends javax.swing.JFrame {
         edtEmail = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         edtCPF = new javax.swing.JFormattedTextField();
+        jLabel7 = new javax.swing.JLabel();
+        comboPagamentos = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         JTreservas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         btReservar.setBackground(new java.awt.Color(247, 151, 29));
         btReservar.setForeground(new java.awt.Color(0, 0, 0));
@@ -107,8 +106,6 @@ public class WinReservas extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("RESERVAS");
@@ -118,24 +115,19 @@ public class WinReservas extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(27, 27, 27)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addContainerGap())
+                .addComponent(jLabel13))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addGap(75, 75, 75))
+                .addGap(47, 47, 47))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3))
+                .addComponent(jLabel13)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -199,42 +191,53 @@ public class WinReservas extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setText("Método de Pagamento:");
+
+        comboPagamentos.setForeground(new java.awt.Color(0, 0, 0));
+        comboPagamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dinheiro", "Pix" }));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel12)
+                                .addComponent(jLabel6)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(edtNome)
+                                .addComponent(comboQuartos, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                    .addComponent(edtCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(edtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(edtEmail, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(comboServicos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtDataSaida, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel6)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(edtNome)
-                            .addComponent(comboQuartos, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(edtCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(edtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(edtEmail, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboServicos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDataSaida, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 21, Short.MAX_VALUE))
+                        .addComponent(comboPagamentos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,7 +270,11 @@ public class WinReservas extends javax.swing.JFrame {
                     .addComponent(txtDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(txtDataSaida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(comboPagamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         JTreservas.setModel(tabelaReservas);
@@ -277,35 +284,29 @@ public class WinReservas extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btReservar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(618, 618, 618)
-                        .addComponent(jLabel7)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btReservar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btReservar))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(109, 109, 109))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -316,323 +317,268 @@ public class WinReservas extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    private void cleanTextQ() {
-        edtNome.setText("");
-        edtCPF.setText("");
-        edtIdade.setText("");
-        edtEmail.setText("");
 
-        txtDataEntrada.setText("");
-        txtDataSaida.setText("");
-    }
-
+    // Function to delete a reservation from the database
     private static void excluirPelaTabelaR(int id) {
-        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
-            String query = "DELETE FROM quartosreservados WHERE id_quartoReservado = ?";  // SQL para excluir com base no id_sabor
+        try (Connection conn = Database.getConnection()) {  // Get connection to the database
+            String query = "DELETE FROM quartosreservados WHERE id_quartoReservado = ?";  // SQL query to delete reservation
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setInt(1, id);  // Define o valor do placeholder (id)
+            stmt.setInt(1, id);  // Set the ID value in the query
 
-            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+            int rowsAffected = stmt.executeUpdate();  // Execute the query and check how many rows were affected
 
             if (rowsAffected > 0) {
-                System.out.println("Dados excluídos do banco de dados!");
+                System.out.println("Dados excluídos do banco de dados!");  // Print a success message
             } else {
-                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");
+                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");  // If no row is deleted, print a message
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());  // Show error message if something goes wrong
         }
     }
+
+
     private void btReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btReservarActionPerformed
-        String nome = edtNome.getText();
-        String idadeS = edtIdade.getText();
-        String cpf = edtCPF.getText();
-        String email = edtEmail.getText();
-        String quemCadastrou = Sexsao.getUsuarioLogado();
+        String nome = edtNome.getText();  // Get the name from the text field
+        String idadeS = edtIdade.getText();  // Get the age from the text field
+        String cpf = edtCPF.getText();  // Get the CPF (ID) from the text field
+        String email = edtEmail.getText();  // Get the email from the text field
+        String quemCadastrou = Sexsao.getUsuarioLogado();  // Get the logged-in user
 
-        String quarto = (String) comboQuartos.getSelectedItem();
-        String servico = (String) comboServicos.getSelectedItem();
-        String dataEntrada = txtDataEntrada.getText();
-        String dataSaida = txtDataSaida.getText();
-
-        // Separar os dados do combobox
+        String quarto = (String) comboQuartos.getSelectedItem();  // Get selected room
+        String servico = (String) comboServicos.getSelectedItem();  // Get selected service
+        String dataEntrada = txtDataEntrada.getText();  // Get entry date
+        String dataSaida = txtDataSaida.getText();  // Get exit date
+        String metodo_pagamento = (String) comboPagamentos.getSelectedItem();  // Get selected service
+        System.out.println("Paga: " + metodo_pagamento);
+        // Split the room data to extract room price and number
         String[] quartoDados = quarto.split(" - ");
-        String valorQuarto = quartoDados[1].replace("R$", "").trim();
-        String numeroQuarto = quartoDados[2].replace("N°", "").trim();
+        String valorQuarto = quartoDados[1].replace("R$", "").trim();  // Get the price of the room
+        String numeroQuarto = quartoDados[2].replace("N°", "").trim();  // Get the room number
 
+        // Split the service data to extract service price
         String[] servicoDados = servico.split(" - ");
-        String valorServico = servicoDados[1].replace("R$", "").trim();
+        String valorServico = servicoDados[1].replace("R$", "").trim();  // Get the service price
 
+        // Convert the prices to double for calculation
         double valorQuartoD = Double.parseDouble(valorQuarto);
         double valorServicoD = Double.parseDouble(valorServico);
 
-        // Verificando se os campos obrigatórios estão preenchidos
+        // Check if all required fields are filled
         if (!nome.isEmpty() && !quarto.isEmpty() && !dataEntrada.isEmpty() && !dataSaida.isEmpty()) {
             try {
-                // Formatando as datas para comparações
+                // Format the dates for comparison
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 LocalDate dataEntradaLocal = LocalDate.parse(dataEntrada, formatter);
                 LocalDate dataSaidaLocal = LocalDate.parse(dataSaida, formatter);
 
-                // Verificar se a data de saída não é anterior à de entrada
+                // Check if exit date is before entry date
                 if (dataSaidaLocal.isBefore(dataEntradaLocal)) {
                     JOptionPane.showMessageDialog(rootPane, "A data de saída não pode ser anterior à data de entrada.");
                     return;
                 }
-                // Calcular a quantidade de dias reservados
+
+                // Calculate the number of days reserved
                 int diasReservados = (int) ChronoUnit.DAYS.between(dataEntradaLocal, dataSaidaLocal);
-                // FINAL VALUE
+
+                // Calculate the final price for the reservation
                 double valorFinal = (diasReservados * valorQuartoD) + valorServicoD;
-                // Verificando se o quarto já está reservado
+
+                // Check if the room is already reserved
                 if (reservaExist(quarto)) {
-                    JOptionPane.showMessageDialog(rootPane, "Quarto N°" + numeroQuarto + " já está reservado.");
+                    JOptionPane.showMessageDialog(rootPane, "Por algum motivo o quarto N°" + numeroQuarto + " já está reservado.");
                     return;
                 } else {
+                    // Validate email format
                     if (!isEmailValido(email)) {
-                        JOptionPane.showMessageDialog(this, "Email inválidilho!");
+                        JOptionPane.showMessageDialog(this, "Email inválido!");
                         return;
                     } else {
+                        // Create a new guest and add them to the database
                         var c = new Hospedes(nome, email, cpf, idadeS, quemCadastrou);
                         if (!nome.isEmpty() && !email.isEmpty() && !cpf.isEmpty() && !idadeS.isEmpty()) {
+                            // Check if the guest already exists
                             if (hospedeExist(nome, email, cpf)) {
                                 JOptionPane.showMessageDialog(rootPane, "Hóspede " + nome + " já está Cadastrado!");
                                 return;
                             } else {
+                                // Add the guest to the database
                                 int idade = Integer.parseInt(idadeS);
                                 c.inserirHospede(nome, email, cpf, idade, quemCadastrou);
-                                // Criando a reserva
-                                var r = new Reservas(nome, quarto, servico, dataEntrada, dataSaida, valorFinal);
-                                r.inserirReserva(nome, quarto, servico, dataEntrada, dataSaida, valorFinal);
+
+                                // Create a new reservation and add it to the database
+                                var r = new Reservas(nome, quarto, servico, dataEntrada, dataSaida, valorFinal, metodo_pagamento);
+                                r.inserirReserva(nome, quarto, servico, dataEntrada, dataSaida, valorFinal, metodo_pagamento);
                                 JOptionPane.showMessageDialog(rootPane, "Hóspede " + nome + " reservou o quarto N°" + numeroQuarto + "!");
-                                // Atualizando lista de reservas
+
+                                // Update the reservation list in the table
                                 listaReservas();
-                                // Criando um objeto QuartosReservados
+
+                                // Create a new room reservation and add it to the database
                                 var qr = new QuartosReservados(nome, numeroQuarto, dataEntrada, dataSaida, valorFinal);
                                 qr.inserirQuartoReservado(nome, numeroQuarto, valorFinal, dataEntrada, dataSaida);
-                                // Atualizando disponibilidade do quarto
+
+                                // Update room availability to "Indisponível"
                                 var q = new Quartos();
                                 q.atualizarDisponibilidade(numeroQuarto, "Indisponível");
-                                this.dispose();
-                                JFrame j = new WinPagamentos(); // Open room management
-                                j.setVisible(true);
-                                j.setLocationRelativeTo(null);
+
+                                // Clear the text fields
+                                cleanTextQ();
                             }
                         }
                     }
                 }
             } catch (DateTimeParseException e) {
-                // Caso as datas estejam no formato errado
+                // Handle invalid date format
                 JOptionPane.showMessageDialog(rootPane, "Formato de data inválido. Use o formato dd/MM/yyyy.");
             }
         } else {
-            // Caso algum campo obrigatório esteja vazio
+            // Alert if any required field is empty
             JOptionPane.showMessageDialog(rootPane, "Todos os campos obrigatórios devem ser preenchidos.");
         }
+
     }//GEN-LAST:event_btReservarActionPerformed
 
-    private static boolean reservaExist(String quarto) {
-        Connection conn = Database.getConnection();
+    // Function to clear the text fields after reservation
+    private void cleanTextQ() {
+        edtNome.setText("");  // Clear name field
+        edtCPF.setText("");  // Clear CPF field
+        edtIdade.setText("");  // Clear age field
+        edtEmail.setText("");  // Clear email field
+
+        txtDataEntrada.setText("");  // Clear entry date field
+        txtDataSaida.setText("");  // Clear exit date field
+    }
+
+    // Function to check if the reservation exists for a given room
+    private boolean reservaExist(String quarto) {
         boolean existe = false;
-
-        try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM quartos WHERE disponivel = ?");
-            stmt.setString(1, quarto);
-
+        try (Connection conn = Database.getConnection()) {
+            // Query to check if the room is already reserved
+            String query = "SELECT COUNT(*) FROM quartos WHERE disponivel = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, quarto);  // Set room availability to the parameter
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                existe = rs.getInt(1) > 0;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Hospedes.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return existe;
-    }
-
-        public void listaReservas() {
-        Connection conn = Database.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-
-            String sql = "SELECT id_reserva, hospede, quarto, servico, data_entrada, data_saida, total FROM reservas";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
-
-            DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
-
-            model.setRowCount(0);
-
-            while (rs.next()) {
-                int id_reserva = rs.getInt("id_reserva");
-                String hospede = rs.getString("hospede");
-                String quarto = rs.getString("quarto");
-                String servico = rs.getString("servico");
-                String data_entrada = rs.getString("data_entrada");
-                String data_saida = rs.getString("data_saida");
-                String total = rs.getString("total");
-
-                model.addRow(new Object[]{id_reserva, hospede, quarto, servico, data_entrada, data_saida, "R$" + total});
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void listaQuartos() {
-        Connection conn = Database.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            String sql = "SELECT id_quarto, tipo, numero, preco, disponivel FROM quartos";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
-
-            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) comboQuartos.getModel();
-
-            model.removeAllElements();
-
-            while (rs.next()) {
-                int id = rs.getInt("id_quarto");
-                String tipo = rs.getString("tipo");
-                String numero = rs.getString("numero");
-                String preco = rs.getString("preco");
-                String disponivel = rs.getString("disponivel");
-                if (!disponivel.equals("Indisponível")) {
-                    model.addElement(tipo + " - R$" + preco + " - N°" + numero);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void listaServicos() {
-        Connection conn = Database.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            String sql = "SELECT id_servico, tipo, preco FROM servicos";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
-
-            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) comboServicos.getModel();
-
-            model.removeAllElements();
-
-            while (rs.next()) {
-                int id = rs.getInt("id_servico");
-                String tipo = rs.getString("tipo");
-                String preco = rs.getString("preco");
-                model.addElement(tipo + " - R$" + preco);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static boolean hospedeExist(String nome, String email, String cpf) {
-        Connection conn = Database.getConnection();
-        boolean existe = false;
-
-        try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM hospedes WHERE nome = ? OR email = ? OR cpf = ?");
-            stmt.setString(1, nome);
-            stmt.setString(2, email);
-            stmt.setString(3, cpf);
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                existe = rs.getInt(1) > 0;
+                existe = rs.getInt(1) > 0;  // If count is greater than 0, the room is reserved
             }
         } catch (SQLException ex) {
             Logger.getLogger(WinReservas.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-
         return existe;
     }
 
-    private boolean isEmailValido(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-        return Pattern.matches(emailRegex, email);
+    // Function to list all current reservations and display them in a table
+    private void listaReservas() {
+        try (Connection conn = Database.getConnection()) {
+            String query = "SELECT * FROM reservas";  // SQL query to fetch all reservations
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            // Clear the table before displaying new data
+            tabelaReservas.setRowCount(0);
+
+            while (rs.next()) {
+                // Get data from the database result
+                int id = rs.getInt("id");
+                String hospede = rs.getString("hospede");
+                String quarto = rs.getString("quarto");
+                String servicos = rs.getString("servicos");
+                String dataEntrada = rs.getString("data_entrada");
+                String dataSaida = rs.getString("data_saida");
+                double total = rs.getDouble("total");
+                String metodo_pagamento = rs.getString("metodo_pagamento");
+
+                // Add the data to the table model (which displays it in the JTable)
+                tabelaReservas.addRow(new Object[]{id, hospede, quarto, servicos, dataEntrada, dataSaida, total, metodo_pagamento});
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(WinReservas.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar as reservas: " + ex.getMessage());
+        }
+    }
+
+    // Function to list all available rooms and display them in a combo box
+    private void listaQuartos() {
+        try (Connection conn = Database.getConnection()) {
+            String query = "SELECT * FROM quartos WHERE disponivel = 'Disponível'";  // SQL query to get available rooms
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();  // Combo box model to hold room data
+
+            // Loop through result set and add rooms to the combo box
+            while (rs.next()) {
+                String numeroQuarto = rs.getString("numero");
+                String preco = rs.getString("preco");
+                model.addElement("Quarto N°" + numeroQuarto + " - R$ " + preco);  // Add formatted room info
+            }
+
+            comboQuartos.setModel(model);  // Set the combo box model
+        } catch (SQLException ex) {
+            Logger.getLogger(WinReservas.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar os quartos: " + ex.getMessage());
+        }
+    }
+
+    // Function to list all available services and display them in a combo box
+    private void listaServicos() {
+        try (Connection conn = Database.getConnection()) {
+            String query = "SELECT * FROM servicos";  // SQL query to get all services
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();  // Combo box model to hold service data
+
+            // Loop through result set and add services to the combo box
+            while (rs.next()) {
+                String nomeServico = rs.getString("tipo");
+                String precoServico = rs.getString("preco");
+                model.addElement(nomeServico + " - R$ " + precoServico);  // Add formatted service info
+            }
+
+            comboServicos.setModel(model);  // Set the combo box model
+        } catch (SQLException ex) {
+            Logger.getLogger(WinReservas.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar os serviços: " + ex.getMessage());
+        }
+    }
+
+    // Function to check if a guest already exists in the database based on their details
+    private boolean hospedeExist(String nome, String email, String cpf) {
+        boolean existe = false;
+        try (Connection conn = Database.getConnection()) {
+            String query = "SELECT COUNT(*) FROM hospedes WHERE nome = ? OR email = ? OR cpf = ?";  // SQL query to check if guest exists
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, nome);
+            stmt.setString(2, email);
+            stmt.setString(3, cpf);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                existe = rs.getInt(1) > 0;  // If count is greater than 0, the guest already exists
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(WinReservas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return existe;
+    }
+
+    // Function to validate the email format
+    public boolean isEmailValido(String email) {
+        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return Pattern.matches(regex, email);  // Check if the email matches the regex pattern
     }
 
     public static void main(String args[]) {
-        try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WinReservas().setVisible(true);
@@ -643,18 +589,18 @@ public class WinReservas extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable JTreservas;
     private javax.swing.JButton btReservar;
+    private javax.swing.JComboBox<String> comboPagamentos;
     private javax.swing.JComboBox<String> comboQuartos;
     private javax.swing.JComboBox<String> comboServicos;
     private javax.swing.JFormattedTextField edtCPF;
     private javax.swing.JTextField edtEmail;
     private javax.swing.JTextField edtIdade;
     private javax.swing.JTextField edtNome;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package adm;
 
 import Sexao.Sexsao;
@@ -13,15 +9,13 @@ import home.HotelHubLogado;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author FELIPEEDUARDOMONARI
- */
 public class WinAdmLogado extends javax.swing.JFrame {
 
+    // Constructor to initialize the window and set the title with the admin's name
     public WinAdmLogado() {
-        initComponents();
-        setTitle("Administrador(a) Logado(a): " + Sexsao.getNomePorCpf());
+        initComponents();  // Initialize GUI components
+        setTitle("Administrador(a): " + Sexsao.getNomePorCpf());  // Set the title with admin's name
+        // Add a window listener for when the window is closed
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 desconect();
@@ -39,7 +33,7 @@ public class WinAdmLogado extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         addAdm = new javax.swing.JMenuItem();
@@ -50,29 +44,37 @@ public class WinAdmLogado extends javax.swing.JFrame {
         desconectar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1084, 569));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
-        jPanel1.setPreferredSize(new java.awt.Dimension(1084, 569));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.JLabel() {
+            public javax.swing.Icon getIcon() {
+                try {
+                    return new javax.swing.ImageIcon(
+                        new java.net.URL("file:/C:/Users/FELIPEEDUARDOMONARI/Documents/NetBeansProjects/HotelHub-main/images/logo-hoteo.png")
+                    );
+                } catch (java.net.MalformedURLException e) {
+                }
+                return null;
+            }
+        }.getIcon());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(112, 112, 112)
-                .addComponent(jLabel3)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addGap(114, 114, 114)
+                .addComponent(jLabel1)
+                .addContainerGap(114, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(125, 125, 125)
-                .addComponent(jLabel3)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addGap(130, 130, 130)
+                .addComponent(jLabel1)
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         jMenu1.setText("HotelHub");
@@ -129,11 +131,21 @@ public class WinAdmLogado extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 1084, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 569, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
@@ -167,22 +179,22 @@ public class WinAdmLogado extends javax.swing.JFrame {
         j.setLocationRelativeTo(null);
     }//GEN-LAST:event_quartosReservadosActionPerformed
 
+    // Method to handle the disconnect action
     public void desconect() {
+        // Show a confirmation dialog asking if the user wants to disconnect
         int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja desconectar " + Sexsao.getNomePorCpf() + "?", "Desconectar", JOptionPane.YES_NO_OPTION);
 
+        // If the user confirms disconnect, show a success message and open the login screen
         if (resposta == JOptionPane.YES_OPTION) {
-            // Mensagem de confirmação
-            JOptionPane.showMessageDialog(rootPane, "Desconectado com sucesso!");
-
-            // Chama a tela inicial de login
-            JFrame j = new HotelHubInitial();
+            JOptionPane.showMessageDialog(rootPane, "Desconectado com sucesso!");  // Success message
+            JFrame j = new HotelHubInitial();  // Open the initial login screen
             j.setVisible(true);
-            j.setLocationRelativeTo(null);
+            j.setLocationRelativeTo(null);  // Center the window on the screen
         } else {
-            // Chama a tela logado
+            // If the user cancels, reopen the logged-in screen
             JFrame j = new WinAdmLogado();
             j.setVisible(true);
-            j.setLocationRelativeTo(null);
+            j.setLocationRelativeTo(null);  // Center the window on the screen
         }
     }
 
@@ -224,7 +236,7 @@ public class WinAdmLogado extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem addAdm;
     private javax.swing.JMenuItem desconectar;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
