@@ -3,6 +3,8 @@ package cadastros;
 import Classes.Quartos;
 import Classes.Servicos;
 import Database.Database;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,13 +12,15 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 public class WinQuartosServicos extends javax.swing.JFrame {
 
     // DefaultTableModels to hold room and service data for display
-    private DefaultTableModel tabelaQuartos = new DefaultTableModel(new Object[]{"Tipo", "Número", "Preço", "Disponibilidade"}, 0);
-    private DefaultTableModel tabelaServicos = new DefaultTableModel(new Object[]{"Tipo", "Preço"}, 0);
+    private DefaultTableModel tabelaQuartos = new DefaultTableModel(new Object[]{"ID", "Tipo", "Número", "Preço", "Disponibilidade"}, 0);
+    private DefaultTableModel tabelaServicos = new DefaultTableModel(new Object[]{"ID", "Tipo", "Preço"}, 0);
 
     public WinQuartosServicos() {
         initComponents();
@@ -24,6 +28,135 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         listaServicos();  // List all services
         setTitle("Quartos e Serviços");  // Set the title for the window
         setLocationRelativeTo(null);  // Center the window on the screen
+
+        // Seleção de linhas nas tabelas
+        JTquartos.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Desmarcar outras tabelas
+                JTservicos.clearSelection();
+            }
+        });
+        JTservicos.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Desmarcar outras tabelas
+                JTservicos.clearSelection();
+            }
+        });
+
+        // Listener for changes in the table
+        tabelaQuartos.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {  // Check if the table data was updated
+                    int row = e.getFirstRow();  // Get the updated row index
+
+                    // Get the updated values from the row
+                    int id = Integer.parseInt(tabelaQuartos.getValueAt(row, 0).toString());  // ID (first column)
+                    String tipo = tabelaQuartos.getValueAt(row, 1).toString();  // Tipo (second column)
+                    String numero = tabelaQuartos.getValueAt(row, 2).toString().replace("N°", "");  // Room number (remove "N°")
+                    String precoStr = tabelaQuartos.getValueAt(row, 3).toString().replace("R$", "").trim();  // Price (remove "R$")
+
+                    double preco = 0.0;
+                    try {
+                        preco = Double.parseDouble(precoStr);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Preço inválido: " + precoStr);
+                        return;
+                    }
+
+                    // Update the database with the modified row data
+                    atualizarPelaTabelaQ(id, tipo, numero, preco);
+                }
+            }
+        });
+        JTquartos.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    int selectedRow = JTquartos.getSelectedRow(); // Get the selected row
+                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
+                    if (resposta == JOptionPane.YES_OPTION) {
+                        if (selectedRow != -1) {
+                            // Get the ID of the selected row (assuming the ID is in the first column)
+                            int id = Integer.parseInt(JTquartos.getValueAt(selectedRow, 0).toString()); // ID in the first column
+
+                            // Delete the item from the database
+                            excluirPelaTabelaQ(id);
+
+                            // Remove the row from the table
+                            DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
+                            model.removeRow(selectedRow);
+
+                            // Show a success message or update the interface
+                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                        }
+                    }
+                }
+            }
+        }
+        );
+
+        // Listener for changes in the table
+        tabelaServicos.addTableModelListener(
+                new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e
+            ) {
+                if (e.getType() == TableModelEvent.UPDATE) {  // Check if the table data was updated
+                    int row = e.getFirstRow();  // Get the updated row index
+
+                    // Get the updated values from the row
+                    int id = Integer.parseInt(tabelaServicos.getValueAt(row, 0).toString());  // ID (first column)
+                    String tipo = tabelaServicos.getValueAt(row, 1).toString();  // Tipo (second column)
+                    String precoStr = tabelaServicos.getValueAt(row, 2).toString().replace("R$", "").trim();  // Price (remove "R$")
+
+                    double preco = 0.0;
+                    try {
+                        preco = Double.parseDouble(precoStr);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Preço inválido: " + precoStr);
+                        return;
+                    }
+
+                    // Update the database with the modified row data
+                    atualizarPelaTabelaS(id, tipo, preco);
+                }
+            }
+        }
+        );
+
+        JTservicos.addKeyListener(
+                new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e
+            ) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    int selectedRow = JTservicos.getSelectedRow(); // Get the selected row
+                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
+                    if (resposta == JOptionPane.YES_OPTION) {
+                        if (selectedRow != -1) {
+                            // Get the ID of the selected row (assuming the ID is in the first column)
+                            int id = Integer.parseInt(JTservicos.getValueAt(selectedRow, 0).toString()); // ID in the first column
+
+                            // Delete the item from the database
+                            excluirPelaTabelaS(id);
+
+                            // Remove the row from the table
+                            DefaultTableModel model = (DefaultTableModel) JTservicos.getModel();
+                            model.removeRow(selectedRow);
+
+                            // Show a success message or update the interface
+                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                        }
+                    }
+                }
+            }
+        }
+        );
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -35,9 +168,9 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        servicos = new javax.swing.JTable();
+        JTservicos = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        quartos = new javax.swing.JTable();
+        JTquartos = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         edtTipoS = new javax.swing.JTextField();
         btnAdicionarQuartos = new javax.swing.JButton();
@@ -71,8 +204,6 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("ADICIONAR QUARTO E SERVIÇOS");
 
-        jLabel9.setIcon(new javax.swing.ImageIcon("C:\\Users\\WESLEYLUCASMOREIRA\\Documents\\mini hotel.jpg")); // NOI18N
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -103,11 +234,11 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                 .addComponent(jLabel9))
         );
 
-        servicos.setModel(tabelaServicos);
-        jScrollPane3.setViewportView(servicos);
+        JTservicos.setModel(tabelaServicos);
+        jScrollPane3.setViewportView(JTservicos);
 
-        quartos.setModel(tabelaQuartos);
-        jScrollPane2.setViewportView(quartos);
+        JTquartos.setModel(tabelaQuartos);
+        jScrollPane2.setViewportView(JTquartos);
 
         jLabel7.setText("Tipo:");
 
@@ -213,6 +344,97 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    // Method to update room reservation data in the database
+    private static void atualizarPelaTabelaQ(int id, String tipo, String numero, double preco) {
+        try (Connection conn = Database.getConnection()) {
+            // SQL query to update room reservation
+            String query = "UPDATE quartos SET tipo = ?, numero = ?, preco = ? WHERE id_quarto = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            // Set the updated values in the prepared statement
+            stmt.setString(1, tipo);      // Set the tipo (room type)
+            stmt.setString(2, numero);    // Set the room number
+            stmt.setDouble(3, preco);     // Set the room price
+            stmt.setInt(4, id);           // Set the room ID
+
+            int rowsAffected = stmt.executeUpdate();  // Execute the update query
+            if (rowsAffected > 0) {
+                System.out.println("Dados atualizados no banco de dados!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());
+        }
+    }
+
+    private static void excluirPelaTabelaQ(int id) {
+        try (Connection conn = Database.getConnection()) {
+            // SQL query to delete data based on the room ID
+            String query = "DELETE FROM quartos WHERE id_quarto = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            stmt.setInt(1, id);  // Set the room ID
+
+            int rowsAffected = stmt.executeUpdate();  // Execute the delete query
+            if (rowsAffected > 0) {
+                System.out.println("Dados excluídos do banco de dados!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
+    }
+
+    // Method to update room reservation data in the database
+    private static void atualizarPelaTabelaS(int id, String tipo, double preco) {
+        try (Connection conn = Database.getConnection()) {
+            // SQL query to update service data
+            String query = "UPDATE servicos SET tipo = ?, preco = ? WHERE id_servico = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            // Set the updated values in the prepared statement
+            stmt.setString(1, tipo);      // Set the service type
+            stmt.setDouble(2, preco);     // Set the service price
+            stmt.setInt(3, id);           // Set the service ID
+
+            int rowsAffected = stmt.executeUpdate();  // Execute the update query
+            if (rowsAffected > 0) {
+                System.out.println("Dados atualizados no banco de dados!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());
+        }
+    }
+
+    // Method to delete data from the database based on selected ID
+    private static void excluirPelaTabelaS(int id) {
+        try (Connection conn = Database.getConnection()) {
+            // SQL query to delete data based on the service ID
+            String query = "DELETE FROM servicos WHERE id_servico = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            stmt.setInt(1, id);  // Set the service ID
+
+            int rowsAffected = stmt.executeUpdate();  // Execute the delete query
+            if (rowsAffected > 0) {
+                System.out.println("Dados excluídos do banco de dados!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
+    }
+
+
     private void btnAdicionarQuartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarQuartosActionPerformed
         String tipo = edtTipo.getText();  // Get room type
         String numero = edtNumero.getText();  // Get room number
@@ -286,22 +508,23 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         ResultSet rs = null;
         try {
             // SQL query to get all rooms
-            String sql = "SELECT tipo, numero, preco, disponivel FROM quartos";
+            String sql = "SELECT id_quarto, tipo, numero, preco, disponivel FROM quartos";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
 
             // Clear the table before adding new rows
-            DefaultTableModel model = (DefaultTableModel) quartos.getModel();
+            DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
             model.setRowCount(0);
 
             // Iterate through the result set and add each room to the table
             while (rs.next()) {
+                int id = rs.getInt("id_quarto");
                 String tipo = rs.getString("tipo");
                 String numero = rs.getString("numero");
                 double preco = rs.getDouble("preco");
                 String disponivel = rs.getString("disponivel");
 
-                model.addRow(new Object[]{tipo, numero, "R$" + preco, disponivel});
+                model.addRow(new Object[]{id, tipo, numero, "R$" + preco, disponivel});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -358,20 +581,21 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         ResultSet rs = null;
         try {
             // SQL query to get all services
-            String sql = "SELECT tipo, preco FROM servicos";
+            String sql = "SELECT id_servico, tipo, preco FROM servicos";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
 
             // Clear the table before adding new rows
-            DefaultTableModel model = (DefaultTableModel) servicos.getModel();
+            DefaultTableModel model = (DefaultTableModel) JTservicos.getModel();
             model.setRowCount(0);
 
             // Iterate through the result set and add each service to the table
             while (rs.next()) {
+                int id = rs.getInt("id_servico");
                 String tipo = rs.getString("tipo");
                 double preco = rs.getDouble("preco");
 
-                model.addRow(new Object[]{tipo, "R$" + preco});
+                model.addRow(new Object[]{id, tipo, "R$" + preco});
             }
 
         } catch (Exception e) {
@@ -432,6 +656,8 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable JTquartos;
+    private javax.swing.JTable JTservicos;
     private javax.swing.JButton btnAdicionarQuartos;
     private javax.swing.JButton btnAdicionarServicos;
     private javax.swing.JTextField edtNumero;
@@ -452,8 +678,6 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable quartos;
-    private javax.swing.JTable servicos;
     // End of variables declaration//GEN-END:variables
 
 }

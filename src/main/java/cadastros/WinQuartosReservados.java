@@ -1,6 +1,9 @@
 package cadastros;
 
+import Classes.Quartos;
 import Database.Database;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,6 +44,36 @@ public class WinQuartosReservados extends javax.swing.JFrame {
                 }
             }
         });
+
+        JTQuarRes.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    int selectedRow = JTQuarRes.getSelectedRow(); // Obtém a linha selecionada
+                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
+                    if (resposta == JOptionPane.YES_OPTION) {
+                        if (selectedRow != -1) {
+                            // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
+                            int id = Integer.parseInt(JTQuarRes.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
+
+                            // Excluindo o item do banco de dados
+                            excluirPelaTabelaQR(id);
+                            var q = new Quartos();
+                            String quarto = tabelaQuartosReservados.getValueAt(selectedRow, 2).toString().replace("N°", "");
+                            q.atualizarDisponibilidade(quarto, "Disponível");
+                            // Removendo a linha da tabela
+                            DefaultTableModel model = (DefaultTableModel) JTQuarRes.getModel();
+                            model.removeRow(selectedRow);
+
+                            // Exibir uma mensagem de sucesso ou atualizar a interface
+                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -48,7 +81,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane2 = new javax.swing.JScrollPane();
-        quartosReservados = new javax.swing.JTable();
+        JTQuarRes = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -57,16 +90,14 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        quartosReservados.setModel(tabelaQuartosReservados);
-        jScrollPane2.setViewportView(quartosReservados);
+        JTQuarRes.setModel(tabelaQuartosReservados);
+        jScrollPane2.setViewportView(JTQuarRes);
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("QUARTOS RESERVADOS");
-
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\WESLEYLUCASMOREIRA\\Documents\\mini hotel.jpg")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -143,6 +174,26 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         }
     }
 
+    // EXCLUSÕES NA TABELA E DELETES NO BANCO
+    private static void excluirPelaTabelaQR(int id) {
+        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
+            String query = "DELETE FROM quartosreservados WHERE id_quartoReservado = ?";  // SQL para excluir com base no id_sabor
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);  // Define o valor do placeholder (id)
+
+            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+
+            if (rowsAffected > 0) {
+                System.out.println("Dados excluídos do banco de dados!");
+            } else {
+                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
+    }
+
     // Method to populate the table with reserved rooms data from the database
     public void listaQuartosReservados() {
         Connection conn = Database.getConnection();
@@ -176,11 +227,11 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable JTQuarRes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable quartosReservados;
     // End of variables declaration//GEN-END:variables
 }

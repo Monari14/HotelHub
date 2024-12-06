@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 public class WinReservas extends javax.swing.JFrame {
@@ -36,32 +38,67 @@ public class WinReservas extends javax.swing.JFrame {
         listaServicos();  // List available services
         setLocationRelativeTo(null);  // Center the window on the screen
 
+        // Listener for changes in the table
+        tabelaReservas.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {  // Check if the table data was updated
+                    int row = e.getFirstRow();  // Get the updated row index
+
+                    // Get the updated values from the row
+                    int id = Integer.parseInt(tabelaReservas.getValueAt(row, 0).toString());  // ID (first column)
+                    String hospede = tabelaReservas.getValueAt(row, 1).toString();  // Tipo (second column)
+                    String quarto = tabelaReservas.getValueAt(row, 2).toString();  // Tipo (second column)
+                    String servicos = tabelaReservas.getValueAt(row, 3).toString();  // Tipo (second column)
+                    String entrada = tabelaReservas.getValueAt(row, 4).toString();  // Tipo (second column)
+                    String saida = tabelaReservas.getValueAt(row, 5).toString();  // Tipo (second column)
+                    double total = Double.parseDouble(tabelaReservas.getValueAt(row, 6).toString()); // Tipo (second column) by flarom parse String mathiack feat monari n bertua
+                    String pagamento = tabelaReservas.getValueAt(row, 7).toString();  // Tipo (second column)
+
+                    // Update the database with the modified row data
+                    atualizarPelaTabelaR(id, hospede, quarto, servicos, entrada, saida, total, pagamento);
+                }
+            }
+        });
+
         // Add functionality to delete selected reservations with the Delete key
         JTreservas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {  // Check if the Delete key was pressed
                     int selectedRow = JTreservas.getSelectedRow();  // Get selected row
-                    if (selectedRow != -1) {  // Check if a row is selected
-                        // Get the ID of the selected reservation
-                        int id = Integer.parseInt(JTreservas.getValueAt(selectedRow, 0).toString());
+                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
+                    if (resposta == JOptionPane.YES_OPTION) {
 
-                        // Call the function to delete the reservation from the database
-                        excluirPelaTabelaR(id);
+                        if (selectedRow != -1) {  // Check if a row is selected
+                            // Get the ID of the selected reservation
+                            int id = Integer.parseInt(JTreservas.getValueAt(selectedRow, 0).toString());
 
-                        // Remove the selected row from the table
-                        DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
-                        model.removeRow(selectedRow);
+                            excluirPelaTabelaR(id);
+                            var q = new Quartos();
+                            String quarto = tabelaReservas.getValueAt(selectedRow, 2).toString();  // Tipo (second column)
+                            String[] quartoDados = quarto.split(" - ");
+                            String numeroQuarto = quartoDados[1].replace("N°", "").trim();
+                            q.atualizarDisponibilidade(numeroQuarto, "Disponível");
+                            
+                            var qr = new QuartosReservados();
+                            qr.deletarQuartoReservado(numeroQuarto);
+                            listaQuartos();
+                            // Remove the selected row from the table
+                            DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
+                            model.removeRow(selectedRow);
 
-                        // Show a message indicating successful deletion
-                        JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
-                    } else {
-                        // If no row is selected, show a message
-                        JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                            // Show a message indicating successful deletion
+                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                        } else {
+                            // If no row is selected, show a message
+                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
+                        }
                     }
                 }
             }
-        });
+        }
+        );
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -338,10 +375,39 @@ public class WinReservas extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    // Method to update room reservation data in the database
+    private static void atualizarPelaTabelaR(int id, String hospede, String quarto, String servicos, String entrada, String saida, double total, String pagamento) {
+        try (Connection conn = Database.getConnection()) {
+            // SQL query to update room reservation
+            String query = "UPDATE quartos SET tipo = ?, numero = ?, preco = ? WHERE id_quarto = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+
+            // Set the updated values in the prepared statement
+            stmt.setString(1, hospede);      // Set the tipo (room type)
+            stmt.setString(2, quarto);    // Set the room number
+            stmt.setString(3, servicos);    // Set the room number
+            stmt.setString(4, entrada);    // Set the room number
+            stmt.setString(5, saida);    // Set the room number
+            stmt.setDouble(6, total);     // Set the room price
+            stmt.setString(7, pagamento);    // Set the room number
+            stmt.setInt(8, id);           // Set the room ID
+
+            int rowsAffected = stmt.executeUpdate();  // Execute the update query
+            if (rowsAffected > 0) {
+                System.out.println("Dados atualizados no banco de dados!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());
+        }
+    }
+
     // Function to delete a reservation from the database
     private static void excluirPelaTabelaR(int id) {
         try (Connection conn = Database.getConnection()) {  // Get connection to the database
-            String query = "DELETE FROM quartosreservados WHERE id_quartoReservado = ?";  // SQL query to delete reservation
+            String query = "DELETE FROM reservas WHERE id_reserva = ?";  // SQL query to delete reservation
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, id);  // Set the ID value in the query
 
@@ -390,8 +456,9 @@ public class WinReservas extends javax.swing.JFrame {
 
             // Extraindo dados do quarto e serviço
             String[] quartoDados = quarto.split(" - ");
-            String valorQuarto = quartoDados[1].replace("R$", "").trim();
-            String numeroQuarto = quartoDados[0].replace("Quarto N°", "").trim();
+            String valorQuarto = quartoDados[2].replace("R$", "").trim();
+
+            String numeroQuarto = quartoDados[1].replace("N°", "").trim();
 
             String[] servicoDados = servico.split(" - ");
             String valorServico = servicoDados[1].replace("R$", "").trim();
@@ -428,12 +495,17 @@ public class WinReservas extends javax.swing.JFrame {
             reserva.inserirReserva(nome, quarto, servico, dataEntrada, dataSaida, valorFinal, metodo_pagamento);
 
             // Atualizando disponibilidade do quarto
-            var q = new Quartos();
-            q.atualizarDisponibilidade(numeroQuarto, "Indisponível");
+            var qt = new Quartos();
+            qt.atualizarDisponibilidade(numeroQuarto, "Indisponível");
 
             // Inserindo quarto reservado
-            var quartoReservado = new QuartosReservados(nome, numeroQuarto, dataEntrada, dataSaida, valorFinal);
-            quartoReservado.inserirQuartoReservado(nome, numeroQuarto, valorFinal, dataEntrada, dataSaida);
+            var qr = new QuartosReservados(); //nome, numeroQuarto, dataEntrada, dataSaida, valorFinal
+            qr.setHospede(nome);
+            qr.setQuarto(numeroQuarto);
+            qr.setData_entrada(dataEntrada);
+            qr.setData_saida(dataSaida);
+            qr.setValor(valorFinal);
+            qr.inserirQuartoReservado(nome, numeroQuarto, valorFinal, dataEntrada, dataSaida);
 
             // Atualizando a lista de reservas
             listaReservas();
@@ -529,9 +601,10 @@ public class WinReservas extends javax.swing.JFrame {
 
             // Loop through result set and add rooms to the combo box
             while (rs.next()) {
+                String tipo = rs.getString("tipo");
                 String numeroQuarto = rs.getString("numero");
                 String preco = rs.getString("preco");
-                model.addElement("Quarto N°" + numeroQuarto + " - R$ " + preco);  // Add formatted room info
+                model.addElement(tipo + " - N°" + numeroQuarto + " - R$ " + preco);  // Add formatted room info
             }
 
             comboQuartos.setModel(model);  // Set the combo box model

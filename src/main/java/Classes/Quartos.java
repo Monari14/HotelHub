@@ -47,6 +47,7 @@ public class Quartos {
         this.disponivel = disponivel;
     }
 
+    
     // Method to insert a new room into the database
     public void inserirQuarto(String tipo, String numero, double preco, String disponivel) {
         Connection conn = Database.getConnection();
