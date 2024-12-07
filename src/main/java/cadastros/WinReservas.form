@@ -110,6 +110,11 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel13">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="1" name="file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-main/images/loguilho-hotilho.png"/>
+                </Property>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

@@ -84,7 +84,9 @@ public class WinReservas extends javax.swing.JFrame {
 
                             var qr = new QuartosReservados();
                             qr.deletarQuartoReservado(numeroQuarto);
+                            
                             listaQuartos();
+
                             // Remove the selected row from the table
                             DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
                             model.removeRow(selectedRow);
@@ -140,6 +142,18 @@ public class WinReservas extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("RESERVAS");
+
+        jLabel13.setIcon(new javax.swing.JLabel() {
+            public javax.swing.Icon getIcon() {
+                try {
+                    return new javax.swing.ImageIcon(
+                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-main/images/loguilho-hotilho.png")
+                    );
+                } catch (java.net.MalformedURLException e) {
+                }
+                return null;
+            }
+        }.getIcon());
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

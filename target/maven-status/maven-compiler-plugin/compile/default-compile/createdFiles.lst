@@ -19,6 +19,7 @@ adm\WinAdmLogado$1.class
 adm\WinListaHospedes$2.class
 Classes\QuartosReservados.class
 adm\WinListaHospedes.class
+cadastros\WinQuartosServicos$9.class
 adm\WinListaFuncionarios$3.class
 adm\WinAdmLogado$6.class
 helpers\KeyboardHelper$1.class
@@ -32,6 +33,7 @@ helpers\KeyboardHelper.class
 adm\WinAdmLogado$4.class
 adm\WinListaFuncionarios.class
 adm\WinAdmLogado$3.class
+cadastros\WinQuartosServicos$8.class
 cadastros\WinPagamentos$2.class
 helpers\KeyboardHelper$3.class
 Classes\Pagamentos.class

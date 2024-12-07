@@ -3,6 +3,8 @@ package cadastros;
 import Classes.Quartos;
 import Classes.Servicos;
 import Database.Database;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
@@ -12,8 +14,10 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class WinQuartosServicos extends javax.swing.JFrame {
@@ -39,7 +43,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         JTservicos.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 // Desmarcar outras tabelas
-                JTservicos.clearSelection();
+                JTquartos.clearSelection();
             }
         });
 
@@ -163,10 +167,8 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         JTservicos = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -201,10 +203,20 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
-
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("ADICIONAR QUARTO E SERVIÇOS");
+
+        jLabel6.setIcon(new javax.swing.JLabel() {
+            public javax.swing.Icon getIcon() {
+                try {
+                    return new javax.swing.ImageIcon(
+                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-main/images/loguilho-hotilho.png")
+                    );
+                } catch (java.net.MalformedURLException e) {
+                }
+                return null;
+            }
+        }.getIcon());
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -214,12 +226,8 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addContainerGap())
-                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addComponent(jLabel6)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,11 +237,8 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9))
+                .addComponent(jLabel6)
+                .addGap(6, 6, 6))
         );
 
         JTservicos.setModel(tabelaServicos);
@@ -280,12 +285,12 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(edtTipoS, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(24, 24, 24)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(edtValorS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -324,11 +329,10 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                         .addComponent(edtValorS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel8))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(edtTipoS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel7))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(edtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5))
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel7)
+                        .addComponent(edtTipoS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(edtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3)
@@ -378,7 +382,6 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
             int rowsAffected = stmt.executeUpdate();  // Execute the delete query
             if (rowsAffected > 0) {
-                System.out.println("Dados excluídos do banco de dados!");
             } else {
                 JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
             }
@@ -402,7 +405,6 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
             int rowsAffected = stmt.executeUpdate();  // Execute the update query
             if (rowsAffected > 0) {
-                System.out.println("Dados atualizados no banco de dados!");
             } else {
                 JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
             }
@@ -423,7 +425,6 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
             int rowsAffected = stmt.executeUpdate();  // Execute the delete query
             if (rowsAffected > 0) {
-                System.out.println("Dados excluídos do banco de dados!");
             } else {
                 JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
             }
@@ -501,49 +502,73 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     }
 
     // Method to list all rooms from the database
-    public void listaQuartos() {
-        Connection conn = Database.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+public void listaQuartos() {
+    Connection conn = Database.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        // SQL query to get all rooms
+        String sql = "SELECT id_quarto, tipo, numero, preco, disponivel FROM quartos";
+        stmt = conn.prepareStatement(sql);
+        rs = stmt.executeQuery();
+
+        // Clear the table before adding new rows
+        DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
+        model.setRowCount(0);
+
+        // Iterate through the result set and add each room to the table
+        while (rs.next()) {
+            int id = rs.getInt("id_quarto");
+            String tipo = rs.getString("tipo");
+            String numero = rs.getString("numero");
+            double preco = rs.getDouble("preco");
+            String disponivel = rs.getString("disponivel");
+
+            model.addRow(new Object[]{id, tipo, numero, "R$" + preco, disponivel});
+        }
+
+        // Custom TableCellRenderer for changing row colors based on availability
+        JTquartos.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Get the 'disponivel' value for the current row
+                String disponivel = (String) table.getValueAt(row, 4);
+
+                // Set background color based on the availability
+                if ("Disponível".equals(disponivel)) {
+                    comp.setBackground(new Color(204, 255, 204)); // Light green
+                } else if ("Indisponível".equals(disponivel)) {
+                    comp.setBackground(new Color(255, 204, 204)); // Light red
+                } else {
+                    comp.setBackground(Color.WHITE); // Default color
+                }
+
+                return comp;
+            }
+        });
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        // Close resources
         try {
-            // SQL query to get all rooms
-            String sql = "SELECT id_quarto, tipo, numero, preco, disponivel FROM quartos";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
-
-            // Clear the table before adding new rows
-            DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
-            model.setRowCount(0);
-
-            // Iterate through the result set and add each room to the table
-            while (rs.next()) {
-                int id = rs.getInt("id_quarto");
-                String tipo = rs.getString("tipo");
-                String numero = rs.getString("numero");
-                double preco = rs.getDouble("preco");
-                String disponivel = rs.getString("disponivel");
-
-                model.addRow(new Object[]{id, tipo, numero, "R$" + preco, disponivel});
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            // Close resources
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
+}
+
 
     // Method to check if a room already exists in the database
     private static boolean quartoExist(String numero) {
@@ -667,12 +692,10 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
