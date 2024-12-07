@@ -5,7 +5,6 @@ import cadastros.WinQuartosReservados;
 import cadastros.WinQuartosServicos;
 import cadastros.WinReservas;
 import home.HotelHubInitial;
-import home.HotelHubLogado;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -187,11 +186,13 @@ public class WinAdmLogado extends javax.swing.JFrame {
         // If the user confirms disconnect, show a success message and open the login screen
         if (resposta == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(rootPane, "Desconectado com sucesso!");  // Success message
+            this.dispose();
             JFrame j = new HotelHubInitial();  // Open the initial login screen
             j.setVisible(true);
             j.setLocationRelativeTo(null);  // Center the window on the screen
         } else {
             // If the user cancels, reopen the logged-in screen
+            this.dispose();
             JFrame j = new WinAdmLogado();
             j.setVisible(true);
             j.setLocationRelativeTo(null);  // Center the window on the screen

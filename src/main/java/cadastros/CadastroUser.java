@@ -18,14 +18,6 @@ public class CadastroUser extends javax.swing.JFrame {
     // Constructor to initialize the window and set closing behavior
     public CadastroUser() {
         initComponents();
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            // When the window is closed, open the initial hotel hub screen
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new HotelHubInitial();
-                j.setVisible(true);
-                j.setLocationRelativeTo(null);  // Center the window
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")
