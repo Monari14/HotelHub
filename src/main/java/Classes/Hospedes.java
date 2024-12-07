@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 
 public class Hospedes {
 
-    private String nome, email, idade, cpf, quemCadastrou;
-
+    private String nome, email, cpf, quemCadastrou;
+    private int idade;
     // Constructor to initialize Hospedes attributes
-    public Hospedes(String nome, String email, String cpf, String idade, String quemCadastrou) {
+    public Hospedes(String nome, String email, String cpf, int idade, String quemCadastrou) {
         this.nome = nome;
         this.idade = idade;
         this.cpf = cpf;

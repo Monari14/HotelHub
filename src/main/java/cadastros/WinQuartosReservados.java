@@ -59,14 +59,17 @@ public class WinQuartosReservados extends javax.swing.JFrame {
                             // Excluindo o item do banco de dados
                             excluirPelaTabelaQR(id);
                             var q = new Quartos();
+                            String hospede = tabelaQuartosReservados.getValueAt(selectedRow, 1).toString();  // Guest (second column)
                             String quarto = tabelaQuartosReservados.getValueAt(selectedRow, 2).toString().replace("N°", "");
                             q.atualizarDisponibilidade(quarto, "Disponível");
+
+                            excluirPelaTabelaF(quarto);
                             // Removendo a linha da tabela
                             DefaultTableModel model = (DefaultTableModel) JTQuarRes.getModel();
                             model.removeRow(selectedRow);
 
                             // Exibir uma mensagem de sucesso ou atualizar a interface
-                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                            JOptionPane.showMessageDialog(null, "Quarto N°" + quarto + " reservado por " + hospede + " foi excluido!");
                         } else {
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
@@ -169,7 +172,6 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             stmt.setInt(6, id);  // Set the reservation ID
 
             stmt.executeUpdate();  // Execute the update query
-            System.out.println("Dados atualizados no banco de dados!");  // Print success message
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());  // Show error if something goes wrong
@@ -186,9 +188,26 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
 
             if (rowsAffected > 0) {
-                System.out.println("Dados excluídos do banco de dados!");
             } else {
-                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
+    }
+
+    private static void excluirPelaTabelaF(String numeroQuarto) {
+        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
+            String query = "DELETE FROM reservas WHERE quarto LIKE ?";  // SQL para excluir com base no número do quarto
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, "%N°" + numeroQuarto + "%");  // Define o valor do placeholder (número do quarto)
+
+            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+
+            if (rowsAffected > 0) {
+                System.out.println("Reserva excluída com sucesso.");
+            } else {
+                System.out.println("Nenhuma reserva encontrada para o quarto " + numeroQuarto);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

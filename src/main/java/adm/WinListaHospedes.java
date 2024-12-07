@@ -15,58 +15,58 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WinListaFuncionarios extends javax.swing.JFrame {
+public class WinListaHospedes extends javax.swing.JFrame {
 
     // DefaultTableModel to define the table structure for displaying employee data
-    private DefaultTableModel tabelaFuncionarios = new DefaultTableModel(new Object[]{"ID", "Nome", "Idade", "CPF", "Administrador(a)"}, 0);
+    private DefaultTableModel tabelaHospedes = new DefaultTableModel(new Object[]{"ID", "Nome", "E-mail", "CPF", "Idade"}, 0);
 
     // Constructor to initialize the components and list employees
-    public WinListaFuncionarios() {
+    public WinListaHospedes() {
         initComponents();  // Initialize GUI components
-        listaFuncionarios();  // Load the employee data into the table
-        setTitle("Lista de Funcionários");  // Set the window title
+        listaHospedes();  // Load the employee data into the table
+        setTitle("Lista de Hóspedes");  // Set the window title
         setLocationRelativeTo(null);  // Center the window on the screen
 
         // Listener for changes in the table
-        tabelaFuncionarios.addTableModelListener(new TableModelListener() {
+        tabelaHospedes.addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {  // Check if the table data was updated
                     int row = e.getFirstRow();  // Get the updated row index
 
                     // Get the updated values from the row
-                    int id = Integer.parseInt(tabelaFuncionarios.getValueAt(row, 0).toString());
-                    String nome = tabelaFuncionarios.getValueAt(row, 1).toString();
-                    String idade = tabelaFuncionarios.getValueAt(row, 2).toString();
-                    String cpf = tabelaFuncionarios.getValueAt(row, 3).toString();
-                    String administrador = tabelaFuncionarios.getValueAt(row, 4).toString();
+                    int id = Integer.parseInt(tabelaHospedes.getValueAt(row, 0).toString());
+                    String nome = tabelaHospedes.getValueAt(row, 1).toString();
+                    String cpf = tabelaHospedes.getValueAt(row, 3).toString();
+                    String email = tabelaHospedes.getValueAt(row, 2).toString();
+                    int idade = Integer.parseInt(tabelaHospedes.getValueAt(row, 4).toString());
 
                     // Update the database with the modified row data
-                    atualizarPelaTabelaF(id, nome, idade, cpf, administrador);
+                    atualizarPelaTabelaH(id, nome, email, cpf, idade);
                 }
             }
         });
-        funcionarios.addKeyListener(new KeyAdapter() {
+        hospedes.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    int selectedRow = funcionarios.getSelectedRow(); // Obtém a linha selecionada
-                    String nome = tabelaFuncionarios.getValueAt(selectedRow, 1).toString();
-                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir " + nome + "?", "Excluir", JOptionPane.YES_NO_OPTION);
+                    int selectedRow = hospedes.getSelectedRow(); // Obtém a linha selecionada
+                    String nome = tabelaHospedes.getValueAt(selectedRow, 1).toString();
+                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir o hóspede " + nome + "?", "Excluir", JOptionPane.YES_NO_OPTION);
                     if (resposta == JOptionPane.YES_OPTION) {
                         if (selectedRow != -1) {
                             // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
-                            int id = Integer.parseInt(funcionarios.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
+                            int id = Integer.parseInt(hospedes.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
 
                             // Excluindo o item do banco de dados
-                            excluirPelaTabelaF(id);
+                            excluirPelaTabelaH(id);
 
                             // Removendo a linha da tabela
-                            DefaultTableModel model = (DefaultTableModel) funcionarios.getModel();
+                            DefaultTableModel model = (DefaultTableModel) hospedes.getModel();
                             model.removeRow(selectedRow);
 
                             // Exibir uma mensagem de sucesso ou atualizar a interface
-                            JOptionPane.showMessageDialog(null, "Funcionário excluído!");
+                            JOptionPane.showMessageDialog(null, "Hóspede excluído!");
                         } else {
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
@@ -86,7 +86,7 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        funcionarios = new javax.swing.JTable();
+        hospedes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -125,8 +125,8 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
-        funcionarios.setModel(tabelaFuncionarios);
-        jScrollPane2.setViewportView(funcionarios);
+        hospedes.setModel(tabelaHospedes);
+        jScrollPane2.setViewportView(hospedes);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -149,17 +149,17 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private static void atualizarPelaTabelaF(int id, String nome, String idade, String cpf, String administrador) {
+    private static void atualizarPelaTabelaH(int id, String nome, String email, String cpf, int idade) {
         try (Connection conn = Database.getConnection()) {
             // SQL query to update room reservation
-            String query = "UPDATE usuarios SET nome = ?, idade = ?, cpf = ?, is_adm = ? WHERE id_usuario = ?";
+            String query = "UPDATE hospedes SET nome = ?, email = ?, cpf = ?, idade = ? WHERE id_hospede = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
 
             // Set the updated values in the prepared statement
             stmt.setString(1, nome);
-            stmt.setString(2, idade);
+            stmt.setString(2, email);
             stmt.setString(3, cpf);
-            stmt.setString(4, administrador);
+            stmt.setInt(4, idade);
             stmt.setInt(5, id);  // Set the reservation ID
 
             stmt.executeUpdate();  // Execute the update query
@@ -170,9 +170,9 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
     }
 
     // EXCLUSÕES NA TABELA E DELETES NO BANCO
-    private static void excluirPelaTabelaF(int id) {
+    private static void excluirPelaTabelaH(int id) {
         try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
-            String query = "DELETE FROM usuarios WHERE id_usuario = ?";  // SQL para excluir com base no id_sabor
+            String query = "DELETE FROM hospedes WHERE id_hospede = ?";  // SQL para excluir com base no id_sabor
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, id);  // Define o valor do placeholder (id)
 
@@ -187,31 +187,31 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
     }
 
     // Method to retrieve employee data from the database and populate the table
-    public void listaFuncionarios() {
+    public void listaHospedes() {
         // Create database connection
         Connection conn = Database.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             // SQL query to select employee data
-            String sql = "SELECT id_usuario, nome, idade, cpf, is_adm FROM usuarios";
+            String sql = "SELECT id_hospede, nome, email, cpf, idade FROM hospedes";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
 
             // Get the table model to update it
-            DefaultTableModel model = (DefaultTableModel) funcionarios.getModel();
+            DefaultTableModel model = (DefaultTableModel) hospedes.getModel();
 
             model.setRowCount(0);  // Clear existing rows in the table
 
             // Iterate through the result set and add data to the table
             while (rs.next()) {
-                int id = rs.getInt("id_usuario");
+                int id = rs.getInt("id_hospede");
                 String nome = rs.getString("nome");
-                String idade = rs.getString("idade");
+                String email = rs.getString("email");
                 String cpf = rs.getString("cpf");
-                String is_adm = rs.getString("is_adm");
-
-                model.addRow(new Object[]{id, nome, idade, cpf, is_adm});  // Add a new row with employee data
+                int idade = rs.getInt("idade");
+                
+                model.addRow(new Object[]{id, nome, email, cpf, idade});  // Add a new row with employee data
             }
         } catch (Exception e) {
             e.printStackTrace();  // Print any exception to the console
@@ -266,26 +266,27 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(WinListaFuncionarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WinListaHospedes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(WinListaFuncionarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WinListaHospedes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(WinListaFuncionarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WinListaHospedes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(WinListaFuncionarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WinListaHospedes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new WinListaFuncionarios().setVisible(true);
+                new WinListaHospedes().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable funcionarios;
+    private javax.swing.JTable hospedes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;

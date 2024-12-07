@@ -88,7 +88,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
 
                             // Show a success message or update the interface
-                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                            JOptionPane.showMessageDialog(null, "Quarto excluido!");
                         } else {
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
@@ -148,7 +148,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
 
                             // Show a success message or update the interface
-                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                            JOptionPane.showMessageDialog(null, "Serviço excluído!");
                         } else {
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
@@ -360,11 +360,8 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             stmt.setInt(4, id);           // Set the room ID
 
             int rowsAffected = stmt.executeUpdate();  // Execute the update query
-            if (rowsAffected > 0) {
-                System.out.println("Dados atualizados no banco de dados!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
-            }
+            if (rowsAffected > 0) {} else {}
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());

@@ -3,6 +3,7 @@ package cadastros;
 import Classes.Hospedes;
 import Classes.Quartos;
 import Classes.QuartosReservados;
+import Classes.ReservaPagamento;
 import Classes.Reservas;
 import Database.Database;
 import Sexao.Sexsao;
@@ -80,7 +81,7 @@ public class WinReservas extends javax.swing.JFrame {
                             String[] quartoDados = quarto.split(" - ");
                             String numeroQuarto = quartoDados[1].replace("N°", "").trim();
                             q.atualizarDisponibilidade(numeroQuarto, "Disponível");
-                            
+
                             var qr = new QuartosReservados();
                             qr.deletarQuartoReservado(numeroQuarto);
                             listaQuartos();
@@ -89,7 +90,7 @@ public class WinReservas extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
 
                             // Show a message indicating successful deletion
-                            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+                            JOptionPane.showMessageDialog(null, "Reserva excluída!");
                         } else {
                             // If no row is selected, show a message
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
@@ -104,7 +105,6 @@ public class WinReservas extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        btReservar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -127,30 +127,19 @@ public class WinReservas extends javax.swing.JFrame {
         edtCPF = new javax.swing.JFormattedTextField();
         jLabel7 = new javax.swing.JLabel();
         comboPagamentos = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btReservar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         JTreservas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        btReservar.setBackground(new java.awt.Color(247, 151, 29));
-        btReservar.setForeground(new java.awt.Color(0, 0, 0));
-        btReservar.setText("Reservar");
-        btReservar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btReservarActionPerformed(evt);
-            }
-        });
-
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("RESERVAS");
-
-        jLabel13.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -239,18 +228,18 @@ public class WinReservas extends javax.swing.JFrame {
         comboPagamentos.setForeground(new java.awt.Color(0, 0, 0));
         comboPagamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dinheiro", "Pix" }));
 
-        jButton1.setBackground(new java.awt.Color(247, 151, 29));
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("Pagar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         jLabel1.setBackground(new java.awt.Color(181, 184, 182));
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setText("Formato: dd/mm/aaaa");
+
+        btReservar.setBackground(new java.awt.Color(247, 151, 29));
+        btReservar.setForeground(new java.awt.Color(0, 0, 0));
+        btReservar.setText("Reservar");
+        btReservar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btReservarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -259,7 +248,6 @@ public class WinReservas extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -293,7 +281,8 @@ public class WinReservas extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(comboPagamentos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(btReservar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -329,12 +318,12 @@ public class WinReservas extends javax.swing.JFrame {
                     .addComponent(txtDataSaida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(comboPagamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(btReservar)
                 .addContainerGap())
         );
 
@@ -350,9 +339,7 @@ public class WinReservas extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btReservar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -360,10 +347,7 @@ public class WinReservas extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btReservar))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -389,7 +373,7 @@ public class WinReservas extends javax.swing.JFrame {
     private static void atualizarPelaTabelaR(int id, String hospede, String quarto, String servicos, String entrada, String saida, double total, String pagamento) {
         try (Connection conn = Database.getConnection()) {
             // SQL query to update room reservation
-            String query = "UPDATE quartos SET tipo = ?, numero = ?, preco = ? WHERE id_quarto = ?";
+            String query = "UPDATE reservas SET hospede = ?, quarto = ?, servico = ?, data_entrada = ?, data_saida = ?, total = ?, metodo_pagamento = ? WHERE id_reserva = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
 
             // Set the updated values in the prepared statement
@@ -404,7 +388,6 @@ public class WinReservas extends javax.swing.JFrame {
 
             int rowsAffected = stmt.executeUpdate();  // Execute the update query
             if (rowsAffected > 0) {
-                System.out.println("Dados atualizados no banco de dados!");
             } else {
                 JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
             }
@@ -424,10 +407,9 @@ public class WinReservas extends javax.swing.JFrame {
             int rowsAffected = stmt.executeUpdate();  // Execute the query and check how many rows were affected
 
             if (rowsAffected > 0) {
-                System.out.println("Dados excluídos do banco de dados!");  // Print a success message
             } else {
-                System.out.println("Nenhum dado foi encontrado com o ID fornecido.");  // If no row is deleted, print a message
             }
+
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());  // Show error message if something goes wrong
@@ -447,7 +429,6 @@ public class WinReservas extends javax.swing.JFrame {
         String dataEntrada = txtDataEntrada.getText().trim();
         String dataSaida = txtDataSaida.getText().trim();
         String metodo_pagamento = (String) comboPagamentos.getSelectedItem();
-
         if (nome.isEmpty() || quarto == null || dataEntrada.isEmpty() || dataSaida.isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Todos os campos obrigatórios devem ser preenchidos.");
             return;
@@ -494,35 +475,26 @@ public class WinReservas extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(rootPane, "Hóspede " + nome + " já está cadastrado.");
                 return;
             }
-
-            // Inserindo hóspede
             int idade = Integer.parseInt(idadeS);
-            var hospede = new Hospedes(nome, email, cpf, idadeS, quemCadastrou);
-            hospede.inserirHospede(nome, email, cpf, idade, quemCadastrou);
 
-            // Inserindo reserva
-            var reserva = new Reservas(nome, quarto, servico, dataEntrada, dataSaida, valorFinal, metodo_pagamento);
-            reserva.inserirReserva(nome, quarto, servico, dataEntrada, dataSaida, valorFinal, metodo_pagamento);
+            var rp = new ReservaPagamento();
+            rp.setNome(nome);
+            rp.setIdade(idade);
+            rp.setCpf(cpf);
+            rp.setEmail(email);
+            rp.setQuemCadastrou(quemCadastrou);
+            rp.setQuarto(quarto);
+            rp.setServico(servico);
+            rp.setDataEntrada(dataEntrada);
+            rp.setDataSaida(dataSaida);
+            rp.setMetodoPagamento(metodo_pagamento);
+            rp.setValorFinal(valorFinal);
+            rp.setNumeroQuarto(numeroQuarto);
 
-            // Atualizando disponibilidade do quarto
-            var qt = new Quartos();
-            qt.atualizarDisponibilidade(numeroQuarto, "Indisponível");
-
-            // Inserindo quarto reservado
-            var qr = new QuartosReservados(); //nome, numeroQuarto, dataEntrada, dataSaida, valorFinal
-            qr.setHospede(nome);
-            qr.setQuarto(numeroQuarto);
-            qr.setData_entrada(dataEntrada);
-            qr.setData_saida(dataSaida);
-            qr.setValor(valorFinal);
-            qr.inserirQuartoReservado(nome, numeroQuarto, valorFinal, dataEntrada, dataSaida);
-
-            // Atualizando a lista de reservas
-            listaReservas();
-            listaQuartos();
-            cleanTextQ();
-
-            JOptionPane.showMessageDialog(rootPane, "Reserva feita com sucesso para o hóspede " + nome + "! Quarto N°" + numeroQuarto);
+            this.dispose();
+            JFrame j = new WinPagamentos(rp);
+            j.setVisible(true);
+            j.setLocationRelativeTo(null);
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(rootPane, "Erro ao processar valores numéricos: " + e.getMessage());
@@ -534,14 +506,37 @@ public class WinReservas extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btReservarActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JFrame j = new WinPagamentos();
-        j.setVisible(true);
-        j.setLocationRelativeTo(null);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    public void all() {
+        var rp = new ReservaPagamento();
+        // Inserindo hóspede
+        var hospede = new Hospedes(rp.getNome(), rp.getEmail(), rp.getCpf(), rp.getIdade(), rp.getQuemCadastrou());
+        hospede.inserirHospede(rp.getNome(), rp.getEmail(), rp.getCpf(), rp.getIdade(), rp.getQuemCadastrou());
+
+        // Inserindo reserva
+        var reserva = new Reservas(rp.getNome(), rp.getQuarto(), rp.getServico(), rp.getDataEntrada(), rp.getDataSaida(), rp.getValorFinal(), rp.getMetodoPagamento());
+        reserva.inserirReserva(rp.getNome(), rp.getQuarto(), rp.getServico(), rp.getDataEntrada(), rp.getDataSaida(), rp.getValorFinal(), rp.getMetodoPagamento());
+
+        // Atualizando disponibilidade do quarto
+        var qt = new Quartos();
+        qt.atualizarDisponibilidade(rp.getNumeroQuarto(), "Indisponível");
+
+        // Inserindo quarto reservado
+        var qr = new QuartosReservados(); //nome, numeroQuarto, dataEntrada, dataSaida, valorFinal
+        qr.setHospede(rp.getNome());
+        qr.setQuarto(rp.getNumeroQuarto());
+        qr.setData_entrada(rp.getDataEntrada());
+        qr.setData_saida(rp.getDataSaida());
+        qr.setValor(rp.getValorFinal());
+        qr.inserirQuartoReservado(rp.getNome(), rp.getNumeroQuarto(), rp.getValorFinal(), rp.getDataEntrada(), rp.getDataSaida());
+        
+        // Atualizando a lista de reservas e quartos na interface
+        listaReservas();
+        listaQuartos();
+        cleanTextQ();
+    }
 
     // Function to clear the text fields after reservation
-    private void cleanTextQ() {
+    public void cleanTextQ() {
         edtNome.setText("");  // Clear name field
         edtCPF.setText("");  // Clear CPF field
         edtIdade.setText("");  // Clear age field
@@ -571,7 +566,7 @@ public class WinReservas extends javax.swing.JFrame {
     }
 
     // Function to list all current reservations and display them in a table
-    private void listaReservas() {
+    public void listaReservas() {
         try (Connection conn = Database.getConnection()) {
             String query = "SELECT * FROM reservas";  // SQL query to fetch all reservations
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -601,7 +596,7 @@ public class WinReservas extends javax.swing.JFrame {
     }
 
     // Function to list all available rooms and display them in a combo box
-    private void listaQuartos() {
+    public void listaQuartos() {
         try (Connection conn = Database.getConnection()) {
             String query = "SELECT * FROM quartos WHERE disponivel = 'Disponível'";  // SQL query to get available rooms
             PreparedStatement stmt = conn.prepareStatement(query);
@@ -691,7 +686,6 @@ public class WinReservas extends javax.swing.JFrame {
     private javax.swing.JTextField edtEmail;
     private javax.swing.JTextField edtIdade;
     private javax.swing.JTextField edtNome;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
