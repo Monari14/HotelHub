@@ -3,6 +3,7 @@ package Classes;
 import Database.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +48,6 @@ public class Quartos {
         this.disponivel = disponivel;
     }
 
-    
     // Method to insert a new room into the database
     public void inserirQuarto(String tipo, String numero, double preco, String disponivel) {
         Connection conn = Database.getConnection();
@@ -64,6 +64,14 @@ public class Quartos {
         } catch (SQLException ex) {
             // Log the error in case of an exception
             Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -101,5 +109,34 @@ public class Quartos {
                 Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    // Method to get room ID by room number
+    public int getIdByNumero(String numero) {
+        int quartoId = -1;
+        Connection conn = Database.getConnection();
+        try {
+            // Query to find the room ID by room number
+            PreparedStatement stmt = conn.prepareStatement("SELECT id_quarto FROM quartos WHERE numero = ?");
+            stmt.setString(1, numero); // Set 'numero' parameter
+
+            ResultSet rs = stmt.executeQuery(); // Execute the query
+            if (rs.next()) {
+                quartoId = rs.getInt("id_quarto"); // Get the room ID from the result set
+            }
+
+        } catch (SQLException ex) {
+            // Log the error in case of an exception
+            Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Quartos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return quartoId; // Return the room ID or -1 if not found
     }
 }

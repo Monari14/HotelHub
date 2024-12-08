@@ -67,42 +67,49 @@ public class WinReservas extends javax.swing.JFrame {
         JTreservas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DELETE) {  // Check if the Delete key was pressed
-                    int selectedRow = JTreservas.getSelectedRow();  // Get selected row
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {  // Verifica se a tecla Delete foi pressionada
+                    int selectedRow = JTreservas.getSelectedRow();  // Obtém a linha selecionada
                     int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
                     if (resposta == JOptionPane.YES_OPTION) {
 
-                        if (selectedRow != -1) {  // Check if a row is selected
-                            // Get the ID of the selected reservation
+                        if (selectedRow != -1) {  // Verifica se uma linha foi selecionada
+                            // Obtém o ID da reserva selecionada
                             int id = Integer.parseInt(JTreservas.getValueAt(selectedRow, 0).toString());
 
-                            excluirPelaTabelaR(id);
+                            excluirPelaTabelaR(id);  // Exclui a reserva pela ID
+
                             var q = new Quartos();
-                            String quarto = tabelaReservas.getValueAt(selectedRow, 2).toString();  // Tipo (second column)
+                            String quarto = tabelaReservas.getValueAt(selectedRow, 2).toString();  // Tipo (segunda coluna)
                             String[] quartoDados = quarto.split(" - ");
-                            String numeroQuarto = quartoDados[1].replace("N°", "").trim();
+                            String numeroQuarto = quartoDados[1].replace("N°", "").trim();  // Número do quarto
+
+                            // Obtém o ID do quarto usando o número do quarto
+                            int quartoId = q.getIdByNumero(numeroQuarto);  // Método que você já tem na classe Quartos
+
+                            // Atualiza a disponibilidade do quarto
                             q.atualizarDisponibilidade(numeroQuarto, "Disponível");
 
+                            // Deleta o quarto reservado usando o ID do quarto
                             var qr = new QuartosReservados();
-                            qr.deletarQuartoReservado(numeroQuarto);
+                            qr.deletarQuartoReservado(quartoId);  // Usando o ID do quarto, não o número
 
-                            listaQuartos();
+                            listaQuartos();  // Atualiza a lista de quartos
 
-                            // Remove the selected row from the table
+                            // Remove a linha da tabela de reservas
                             DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
                             model.removeRow(selectedRow);
 
-                            // Show a message indicating successful deletion
+                            // Exibe uma mensagem de sucesso
                             JOptionPane.showMessageDialog(null, "Reserva excluída!");
                         } else {
-                            // If no row is selected, show a message
+                            // Se nenhuma linha for selecionada, exibe uma mensagem
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
                     }
                 }
             }
-        }
-        );
+        });
+
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -389,29 +396,41 @@ public class WinReservas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Method to update room reservation data in the database
-    private static void atualizarPelaTabelaR(int id, String hospede, String servicos, String entrada, String saida, String pagamento) {
+    private static void atualizarPelaTabelaR(int id, String nomeHospede, String servicos, String entrada, String saida, String pagamento) {
         try (Connection conn = Database.getConnection()) {
+            var r = new Reservas();
+            int hospedeId = r.obterIdHospedePorNome(nomeHospede);
+
+            if (hospedeId == -1) {
+                JOptionPane.showMessageDialog(null, "Hóspede não encontrado!");
+                return;
+            }
+
             // SQL query to update room reservation
-            String query = "UPDATE reservas SET hospede = ?, servico = ?, data_entrada = ?, data_saida = ?, metodo_pagamento = ? WHERE id_reserva = ?";
+            String query = "UPDATE reservas SET hospede_id = ?, servico = ?, data_entrada = ?, data_saida = ?, metodo_pagamento = ? WHERE id_reserva = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
 
             // Set the updated values in the prepared statement
-            stmt.setString(1, hospede);      // Set the tipo (room type)
-            stmt.setString(2, servicos);    // Set the room number
-            stmt.setString(3, entrada);    // Set the room number
-            stmt.setString(4, saida);    // Set the room number
-            stmt.setString(5, pagamento);    // Set the room number
-            stmt.setInt(6, id);           // Set the room ID
+            stmt.setInt(1, hospedeId);      // Set the hospede_id (integer value)
+            stmt.setString(2, servicos);     // Set the services
+            stmt.setString(3, entrada);     // Set the entry date
+            stmt.setString(4, saida);       // Set the departure date
+            stmt.setString(5, pagamento);   // Set the payment method
+            stmt.setInt(6, id);             // Set the reservation ID
 
-            int rowsAffected = stmt.executeUpdate();  // Execute the update query
+            // Execute the update query
+            int rowsAffected = stmt.executeUpdate();
+
+            // Check if the update was successful
             if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Reserva atualizada com sucesso!");
             } else {
-            } // se true atualizou
+                JOptionPane.showMessageDialog(null, "Nenhuma reserva foi atualizada.");
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Não é possível alterar este campo!" + ex.getMessage());
         }
-
     }
 
     // Function to delete a reservation from the database
@@ -498,7 +517,6 @@ public class WinReservas extends javax.swing.JFrame {
                 return;
             }
 
-
             // Criando o objeto de reserva
             var rp = new ReservaPagamento();
             rp.setNome(nome);
@@ -529,28 +547,36 @@ public class WinReservas extends javax.swing.JFrame {
 
     public void all() {
         var rp = new ReservaPagamento();
+
         // Inserindo hóspede
         var hospede = new Hospedes(rp.getNome(), rp.getEmail(), rp.getCpf(), rp.getIdade(), rp.getQuemCadastrou());
-        if (!hospedeExist(rp.getNome(), rp.getEmail(), rp.getCpf())) {
+        int hospedeId = hospede.getHospedeId(rp.getNome(), rp.getCpf()); // Usando o novo método para pegar o ID
+
+        // Se o hóspede não foi encontrado, insere o hóspede no banco
+        if (hospedeId == -1) {
             hospede.inserirHospede(rp.getNome(), rp.getEmail(), rp.getCpf(), rp.getIdade(), rp.getQuemCadastrou());
+            hospedeId = hospede.getHospedeId(rp.getNome(), rp.getCpf()); // Agora que o hóspede foi inserido, buscamos o ID
         }
 
+        // Obtendo o ID do quarto
+        var qt = new Quartos();
+        int quartoId = qt.getIdByNumero(rp.getNumeroQuarto()); // Obter o ID do quarto a partir do número
+
         // Inserindo reserva
-        var reserva = new Reservas(rp.getNome(), rp.getQuarto(), rp.getServico(), rp.getDataEntrada(), rp.getDataSaida(), rp.getValorFinal(), rp.getMetodoPagamento());
-        reserva.inserirReserva(rp.getNome(), rp.getQuarto(), rp.getServico(), rp.getDataEntrada(), rp.getDataSaida(), rp.getValorFinal(), rp.getMetodoPagamento());
+        var reserva = new Reservas(hospedeId, quartoId, rp.getServico(), rp.getDataEntrada(), rp.getDataSaida(), rp.getValorFinal(), rp.getMetodoPagamento());
+        reserva.inserirReserva(hospedeId, quartoId, rp.getServico(), rp.getDataEntrada(), rp.getDataSaida(), rp.getValorFinal(), rp.getMetodoPagamento());
 
         // Atualizando disponibilidade do quarto
-        var qt = new Quartos();
         qt.atualizarDisponibilidade(rp.getNumeroQuarto(), "Indisponível");
 
         // Inserindo quarto reservado
-        var qr = new QuartosReservados(); //nome, numeroQuarto, dataEntrada, dataSaida, valorFinal
-        qr.setHospede(rp.getNome());
-        qr.setQuarto(rp.getNumeroQuarto());
+        var qr = new QuartosReservados();
         qr.setData_entrada(rp.getDataEntrada());
         qr.setData_saida(rp.getDataSaida());
         qr.setValor(rp.getValorFinal());
-        qr.inserirQuartoReservado(rp.getNome(), rp.getNumeroQuarto(), rp.getValorFinal(), rp.getDataEntrada(), rp.getDataSaida());
+
+        // Inserir o quarto reservado usando os IDs
+        qr.inserirQuartoReservado(hospedeId, quartoId, rp.getValorFinal(), rp.getDataEntrada(), rp.getDataSaida());
 
         // Atualizando a lista de reservas e quartos na interface
         listaReservas();
@@ -588,10 +614,12 @@ public class WinReservas extends javax.swing.JFrame {
         return existe;
     }
 
-    // Function to list all current reservations and display them in a table
     public void listaReservas() {
         try (Connection conn = Database.getConnection()) {
-            String query = "SELECT * FROM reservas";  // SQL query to fetch all reservations
+            // Query para buscar as reservas e os detalhes do quarto com um JOIN
+            String query = "SELECT r.id_reserva, r.hospede_id, q.numero, r.servico, r.data_entrada, r.data_saida, r.total, r.metodo_pagamento "
+                    + "FROM reservas r "
+                    + "JOIN quartos q ON r.quarto_id = q.id_quarto";  // Fazendo o JOIN entre reservas e quartos
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -601,16 +629,26 @@ public class WinReservas extends javax.swing.JFrame {
             while (rs.next()) {
                 // Get data from the database result
                 int id = rs.getInt("id_reserva");
-                String hospede = rs.getString("hospede");
-                String quarto = rs.getString("quarto");
+                String hospede = rs.getString("hospede_id");
+                String numeroQuarto = rs.getString("numero");  // O número do quarto é recuperado diretamente da tabela 'quartos'
                 String servicos = rs.getString("servico");
                 String dataEntrada = rs.getString("data_entrada");
                 String dataSaida = rs.getString("data_saida");
                 double total = rs.getDouble("total");
                 String metodo_pagamento = rs.getString("metodo_pagamento");
+                var r = new Reservas();
 
                 // Add the data to the table model (which displays it in the JTable)
-                tabelaReservas.addRow(new Object[]{id, hospede, quarto, servicos, dataEntrada, dataSaida, total, metodo_pagamento});
+                tabelaReservas.addRow(new Object[]{
+                    id,
+                    r.getNomeHospedeById(Integer.parseInt(hospede)), // Presumo que o método getNomeHospedeById esteja correto
+                    "N°" + numeroQuarto, // O número do quarto agora vem diretamente da consulta SQL
+                    servicos,
+                    dataEntrada,
+                    dataSaida,
+                    total,
+                    metodo_pagamento
+                });
             }
         } catch (SQLException ex) {
             Logger.getLogger(WinReservas.class.getName()).log(Level.SEVERE, null, ex);
