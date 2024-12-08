@@ -103,6 +103,20 @@ public class WinReservas extends javax.swing.JFrame {
             }
         }
         );
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    listaReservas();
+                    listaQuartos();
+                    listaServicos();
+                }
+            }
+        });
+
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -144,7 +158,7 @@ public class WinReservas extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("RESERVAS");
 
-        jLabel13.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
+        jLabel13.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-aaaa\\images\\loguilho-hotilho.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -239,7 +253,7 @@ public class WinReservas extends javax.swing.JFrame {
 
         btReservar.setBackground(new java.awt.Color(247, 151, 29));
         btReservar.setForeground(new java.awt.Color(0, 0, 0));
-        btReservar.setText("Reservar");
+        btReservar.setText("Pagar");
         btReservar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btReservarActionPerformed(evt);
@@ -484,10 +498,6 @@ public class WinReservas extends javax.swing.JFrame {
                 return;
             }
 
-            if (!isEmailValido(email)) {
-                JOptionPane.showMessageDialog(this, "Email inválido!");
-                return;
-            }
 
             // Criando o objeto de reserva
             var rp = new ReservaPagamento();

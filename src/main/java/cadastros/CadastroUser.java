@@ -176,11 +176,6 @@ public class CadastroUser extends javax.swing.JFrame {
 
     private void btCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadastroActionPerformed
         cadastrar();
-        deuOk = true;
-        if (hotelHubInitial != null) { // Verifica se a referência não é nula
-            hotelHubInitial.dispose(); // Fecha a janela HotelHubInitial
-        }
-        dispose();
     }//GEN-LAST:event_btCadastroActionPerformed
 
     private void cadastrar() {
@@ -203,7 +198,6 @@ public class CadastroUser extends javax.swing.JFrame {
             JFrame j = new CadastroUser(null); // Open the user registration window.
             j.setVisible(true);
             j.setLocationRelativeTo(null);
-            
             return;
         }
 
@@ -234,6 +228,11 @@ public class CadastroUser extends javax.swing.JFrame {
                     }
                     j.setVisible(true);
                     j.setLocationRelativeTo(null);  // Center the window
+                    deuOk = true;
+                    if (hotelHubInitial != null) {
+                        hotelHubInitial.dispose();
+                        dispose();
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao cadastrar o funcionário.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -297,7 +296,7 @@ public class CadastroUser extends javax.swing.JFrame {
 
         int idade = Integer.parseInt(idadeS);
         if (idade < 18) {
-            JOptionPane.showMessageDialog(this, "Idade deve ser maior que 18 anos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Idade deve ser igual ou maior que 18 anos.", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

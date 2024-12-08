@@ -162,7 +162,18 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             }
         }
         );
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    listaQuartos();
+                    listaServicos();
+                }
+            }
+        });
 
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -212,7 +223,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             public javax.swing.Icon getIcon() {
                 try {
                     return new javax.swing.ImageIcon(
-                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-main/images/loguilho-hotilho.png")
+                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-aaaa/images/loguilho-hotilho.png")
                     );
                 } catch (java.net.MalformedURLException e) {
                 }

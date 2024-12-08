@@ -47,7 +47,6 @@ public class HotelHubInitial extends javax.swing.JFrame {
     // Constructor initializes the UI and checks the database connection.
     public HotelHubInitial() {
         initComponents();
-        setTitle("Hotelaria"); // Set the window title.
         Connection conn = Database.getConnection(); // Get the database connection.
 
         if (conn == null) { // If the connection fails, show an error message and exit.
@@ -76,7 +75,7 @@ public class HotelHubInitial extends javax.swing.JFrame {
             public javax.swing.Icon getIcon() {
                 try {
                     return new javax.swing.ImageIcon(
-                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-main/images/logo-hoteo.png")
+                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-aaaa/images/logo-hoteo.png")
                     );
                 } catch (java.net.MalformedURLException e) {
                 }

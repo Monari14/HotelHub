@@ -46,38 +46,17 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             }
         });
 
-        JTQuarRes.addKeyListener(new KeyAdapter() {
+        this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    int selectedRow = JTQuarRes.getSelectedRow(); // Obtém a linha selecionada
-                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
-                    if (resposta == JOptionPane.YES_OPTION) {
-                        if (selectedRow != -1) {
-                            // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
-                            int id = Integer.parseInt(JTQuarRes.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
-
-                            // Excluindo o item do banco de dados
-                            excluirPelaTabelaQR(id);
-                            var q = new Quartos();
-                            String hospede = tabelaQuartosReservados.getValueAt(selectedRow, 1).toString();  // Guest (second column)
-                            String quarto = tabelaQuartosReservados.getValueAt(selectedRow, 2).toString().replace("N°", "");
-                            q.atualizarDisponibilidade(quarto, "Disponível");
-
-                            excluirPelaTabelaF(quarto);
-                            // Removendo a linha da tabela
-                            DefaultTableModel model = (DefaultTableModel) JTQuarRes.getModel();
-                            model.removeRow(selectedRow);
-
-                            // Exibir uma mensagem de sucesso ou atualizar a interface
-                            JOptionPane.showMessageDialog(null, "Quarto N°" + quarto + " reservado por " + hospede + " foi excluido!");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
-                        }
-                    }
+                if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    listaQuartosReservados();
                 }
             }
         });
+
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +81,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("QUARTOS RESERVADOS");
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-main\\images\\loguilho-hotilho.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-aaaa\\images\\loguilho-hotilho.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -123,7 +102,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
                 .addGap(32, 32, 32))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 3, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -140,13 +119,13 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 251, Short.MAX_VALUE)
+                .addGap(0, 263, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(78, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(71, Short.MAX_VALUE)))
         );
 
         pack();

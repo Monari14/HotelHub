@@ -93,7 +93,7 @@
                           <Component id="lbTotal" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btReservar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="22" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -102,7 +102,7 @@
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="2" name="C:\Users\monari\Documents\NetBeansProjects\HotelHub-main\images\the-qr-code.jpeg"/>
+                  <Image iconType="2" name="C:\Users\monari\Documents\NetBeansProjects\HotelHub-aaaa\images\the-qr-code.jpeg"/>
                 </Property>
               </Properties>
             </Component>
@@ -180,7 +180,7 @@
             <Component class="javax.swing.JLabel" name="jLabel13">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="2" name="C:\Users\monari\Documents\NetBeansProjects\HotelHub-main\images\loguilho-hotilho.png"/>
+                  <Image iconType="1" name="file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-aaaa/images/loguilho-hotilho.png"/>
                 </Property>
               </Properties>
             </Component>
