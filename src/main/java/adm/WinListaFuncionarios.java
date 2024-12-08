@@ -41,8 +41,13 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
                     String cpf = tabelaFuncionarios.getValueAt(row, 3).toString();
                     String administrador = tabelaFuncionarios.getValueAt(row, 4).toString();
 
+
+                    String idadeNumerica = idade.replaceAll("[^0-9]", "");
+                    int idad = Integer.parseInt(idadeNumerica);
+
                     // Update the database with the modified row data
-                    atualizarPelaTabelaF(id, nome, idade, cpf, administrador);
+                    atualizarPelaTabelaF(id, nome, idad, cpf, administrador);
+                    listaFuncionarios();
                 }
             }
         });
@@ -60,7 +65,7 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
 
                             // Excluindo o item do banco de dados
                             excluirPelaTabelaF(id);
-
+                            listaFuncionarios();
                             // Removendo a linha da tabela
                             DefaultTableModel model = (DefaultTableModel) funcionarios.getModel();
                             model.removeRow(selectedRow);
@@ -151,7 +156,7 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private static void atualizarPelaTabelaF(int id, String nome, String idade, String cpf, String administrador) {
+    private static void atualizarPelaTabelaF(int id, String nome, int idade, String cpf, String administrador) {
         try (Connection conn = Database.getConnection()) {
             // SQL query to update room reservation
             String query = "UPDATE usuarios SET nome = ?, idade = ?, cpf = ?, is_adm = ? WHERE id_usuario = ?";
@@ -159,7 +164,7 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
 
             // Set the updated values in the prepared statement
             stmt.setString(1, nome);
-            stmt.setString(2, idade);
+            stmt.setInt(2, idade);
             stmt.setString(3, cpf);
             stmt.setString(4, administrador);
             stmt.setInt(5, id);  // Set the reservation ID
@@ -180,7 +185,9 @@ public class WinListaFuncionarios extends javax.swing.JFrame {
 
             int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
 
-            if (rowsAffected > 0) {} else {}
+            if (rowsAffected > 0) {
+            } else {
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -39,10 +39,13 @@ public class WinListaHospedes extends javax.swing.JFrame {
                     String nome = tabelaHospedes.getValueAt(row, 1).toString();
                     String cpf = tabelaHospedes.getValueAt(row, 3).toString();
                     String email = tabelaHospedes.getValueAt(row, 2).toString();
-                    int idade = Integer.parseInt(tabelaHospedes.getValueAt(row, 4).toString());
+                    String idade = tabelaHospedes.getValueAt(row, 4).toString();
 
-                    // Update the database with the modified row data
-                    atualizarPelaTabelaH(id, nome, email, cpf, idade);
+                    String idadeNumerica = idade.replaceAll("[^0-9]", "");
+                    int idad = Integer.parseInt(idadeNumerica);
+
+                    atualizarPelaTabelaH(id, nome, email, cpf, idad);
+                    listaHospedes();
                 }
             }
         });
@@ -180,7 +183,9 @@ public class WinListaHospedes extends javax.swing.JFrame {
 
             int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
 
-            if (rowsAffected > 0) {} else {}
+            if (rowsAffected > 0) {
+            } else {
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -212,7 +217,7 @@ public class WinListaHospedes extends javax.swing.JFrame {
                 String email = rs.getString("email");
                 String cpf = rs.getString("cpf");
                 int idade = rs.getInt("idade");
-                
+
                 model.addRow(new Object[]{id, nome, email, cpf, idade});  // Add a new row with employee data
             }
         } catch (Exception e) {

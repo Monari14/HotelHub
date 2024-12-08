@@ -32,7 +32,6 @@ public class WinQuartosServicos extends javax.swing.JFrame {
         listaServicos();  // List all services
         setTitle("Quartos e Serviços");  // Set the title for the window
         setLocationRelativeTo(null);  // Center the window on the screen
-
         // Seleção de linhas nas tabelas
         JTquartos.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -69,7 +68,8 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                     }
 
                     // Update the database with the modified row data
-                    atualizarPelaTabelaQ(id, tipo, numero, preco);
+                    atualizarPelaTabelaQ(id, tipo, preco);
+                    listaQuartos();
                 }
             }
         });
@@ -92,7 +92,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
 
                             // Show a success message or update the interface
-                            JOptionPane.showMessageDialog(null, "Quarto excluido!");
+                            listaQuartos();
                         } else {
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
@@ -126,6 +126,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
                     // Update the database with the modified row data
                     atualizarPelaTabelaS(id, tipo, preco);
+                    listaServicos();
                 }
             }
         }
@@ -152,7 +153,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
 
                             // Show a success message or update the interface
-                            JOptionPane.showMessageDialog(null, "Serviço excluído!");
+                            listaServicos();
                         } else {
                             JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
@@ -161,6 +162,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             }
         }
         );
+
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -351,20 +353,19 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Method to update room reservation data in the database
-    private static void atualizarPelaTabelaQ(int id, String tipo, String numero, double preco) {
+    private static void atualizarPelaTabelaQ(int id, String tipo, double preco) {
         try (Connection conn = Database.getConnection()) {
             // SQL query to update room reservation
-            String query = "UPDATE quartos SET tipo = ?, numero = ?, preco = ? WHERE id_quarto = ?";
+            String query = "UPDATE quartos SET tipo = ?, preco = ? WHERE id_quarto = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
 
             // Set the updated values in the prepared statement
             stmt.setString(1, tipo);      // Set the tipo (room type)
-            stmt.setString(2, numero);    // Set the room number
-            stmt.setDouble(3, preco);     // Set the room price
-            stmt.setInt(4, id);           // Set the room ID
+            stmt.setDouble(2, preco);     // Set the room price
+            stmt.setInt(3, id);           // Set the room ID
 
             int rowsAffected = stmt.executeUpdate();  // Execute the update query
-            if (rowsAffected > 0) {} else {}
+            if (rowsAffected > 0) {} else {} //se true atualizou
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -417,16 +418,37 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     // Method to delete data from the database based on selected ID
     private static void excluirPelaTabelaS(int id) {
         try (Connection conn = Database.getConnection()) {
-            // SQL query to delete data based on the service ID
-            String query = "DELETE FROM servicos WHERE id_servico = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
+            // SQL query to retrieve the service details based on the ID
+            String selectQuery = "SELECT tipo, preco FROM servicos WHERE id_servico = ?";
+            PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
+            selectStmt.setInt(1, id);
 
-            stmt.setInt(1, id);  // Set the service ID
+            ResultSet rs = selectStmt.executeQuery();
 
-            int rowsAffected = stmt.executeUpdate();  // Execute the delete query
-            if (rowsAffected > 0) {
+            if (rs.next()) {
+                String tipo = rs.getString("tipo"); // Assuming 'tipo' column exists
+                double preco = rs.getDouble("preco"); // Assuming 'preco' column exists
+
+                // Check if the row is "Nenhum" and price is "0"
+                if ("Nenhum".equals(tipo) && preco == 0.0) {
+                    JOptionPane.showMessageDialog(null, "Nao e possível excluir este item.");
+                    return; // Exit the method without deleting the row
+                }
             } else {
-                JOptionPane.showMessageDialog(null, "Nenhum dado foi encontrado com o ID fornecido.");
+                JOptionPane.showMessageDialog(null, "Nenhum dado encontrado com o ID fornecido.");
+                return; // Exit the method if no data is found
+            }
+
+            // SQL query to delete the data based on the service ID
+            String deleteQuery = "DELETE FROM servicos WHERE id_servico = ?";
+            PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+            deleteStmt.setInt(1, id);
+
+            int rowsAffected = deleteStmt.executeUpdate(); // Execute the delete query
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Serviço excluído com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao excluir o serviço.");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -502,73 +524,72 @@ public class WinQuartosServicos extends javax.swing.JFrame {
     }
 
     // Method to list all rooms from the database
-public void listaQuartos() {
-    Connection conn = Database.getConnection();
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-    try {
-        // SQL query to get all rooms
-        String sql = "SELECT id_quarto, tipo, numero, preco, disponivel FROM quartos";
-        stmt = conn.prepareStatement(sql);
-        rs = stmt.executeQuery();
-
-        // Clear the table before adding new rows
-        DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
-        model.setRowCount(0);
-
-        // Iterate through the result set and add each room to the table
-        while (rs.next()) {
-            int id = rs.getInt("id_quarto");
-            String tipo = rs.getString("tipo");
-            String numero = rs.getString("numero");
-            double preco = rs.getDouble("preco");
-            String disponivel = rs.getString("disponivel");
-
-            model.addRow(new Object[]{id, tipo, numero, "R$" + preco, disponivel});
-        }
-
-        // Custom TableCellRenderer for changing row colors based on availability
-        JTquartos.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // Get the 'disponivel' value for the current row
-                String disponivel = (String) table.getValueAt(row, 4);
-
-                // Set background color based on the availability
-                if ("Disponível".equals(disponivel)) {
-                    comp.setBackground(new Color(204, 255, 204)); // Light green
-                } else if ("Indisponível".equals(disponivel)) {
-                    comp.setBackground(new Color(255, 204, 204)); // Light red
-                } else {
-                    comp.setBackground(Color.WHITE); // Default color
-                }
-
-                return comp;
-            }
-        });
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        // Close resources
+    public void listaQuartos() {
+        Connection conn = Database.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            if (rs != null) {
-                rs.close();
+            // SQL query to get all rooms
+            String sql = "SELECT id_quarto, tipo, numero, preco, disponivel FROM quartos";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            // Clear the table before adding new rows
+            DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
+            model.setRowCount(0);
+
+            // Iterate through the result set and add each room to the table
+            while (rs.next()) {
+                int id = rs.getInt("id_quarto");
+                String tipo = rs.getString("tipo");
+                String numero = rs.getString("numero");
+                double preco = rs.getDouble("preco");
+                String disponivel = rs.getString("disponivel");
+
+                model.addRow(new Object[]{id, tipo, numero, "R$" + preco, disponivel});
             }
-            if (stmt != null) {
-                stmt.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+
+            // Custom TableCellRenderer for changing row colors based on availability
+            JTquartos.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                    // Get the 'disponivel' value for the current row
+                    String disponivel = (String) table.getValueAt(row, 4);
+
+                    // Set background color based on the availability
+                    if ("Disponível".equals(disponivel)) {
+                        comp.setBackground(new Color(204, 255, 204)); // Light green
+                    } else if ("Indisponível".equals(disponivel)) {
+                        comp.setBackground(new Color(255, 204, 204)); // Light red
+                    } else {
+                        comp.setBackground(Color.WHITE); // Default color
+                    }
+
+                    return comp;
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            // Close resources
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-}
-
 
     // Method to check if a room already exists in the database
     private static boolean quartoExist(String numero) {

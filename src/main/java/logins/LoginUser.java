@@ -50,7 +50,7 @@ public class LoginUser extends javax.swing.JDialog {
 
         btLogin.setBackground(new java.awt.Color(255, 153, 0));
         btLogin.setForeground(new java.awt.Color(0, 0, 0));
-        btLogin.setText("Cadastrar");
+        btLogin.setText("Logar");
         btLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btLoginActionPerformed(evt);
@@ -182,10 +182,10 @@ public class LoginUser extends javax.swing.JDialog {
     }
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
-        this.dispose(); // Close current window
-        JFrame j = new CadastroUser(); // Open cadastro window
+        this.dispose();  // Close the current window
+        CadastroUser j = new CadastroUser(null);  // Open the login window
         j.setVisible(true);
-        j.setLocationRelativeTo(null);
+        j.setLocationRelativeTo(null);  // Center the window
     }//GEN-LAST:event_userActionPerformed
 
     private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed

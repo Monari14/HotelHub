@@ -131,9 +131,9 @@ public class HotelHubInitial extends javax.swing.JFrame {
 
     // Event handler for the "Cadastro User" menu item.
     private void cadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastroActionPerformed
-        JFrame j = new CadastroUser(); // Open the user registration window.
+        CadastroUser j = new CadastroUser(this); // Open the user registration window.
         j.setVisible(true);
-        j.setLocationRelativeTo(null); // Center the new window.
+        j.setLocationRelativeTo(null);
     }//GEN-LAST:event_cadastroActionPerformed
 
     // Event handler for the "Login User" menu item.

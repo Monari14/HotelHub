@@ -40,7 +40,8 @@ public class WinQuartosReservados extends javax.swing.JFrame {
                     String saida = tabelaQuartosReservados.getValueAt(row, 5).toString();  // Check-out date
 
                     // Update the database with the modified row data
-                    atualizarPelaTabelaQR(id, hospede, quarto, valor, entrada, saida);
+                    atualizarPelaTabelaQR(id, hospede, entrada, saida);
+                    listaQuartosReservados();
                 }
             }
         });
@@ -152,19 +153,17 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Method to update room reservation data in the database
-    private static void atualizarPelaTabelaQR(int id, String hospede, String quarto, String preco, String dataEntrada, String dataSaida) {
+    private static void atualizarPelaTabelaQR(int id, String hospede, String dataEntrada, String dataSaida) {
         try (Connection conn = Database.getConnection()) {
             // SQL query to update room reservation
-            String query = "UPDATE quartosreservados SET hospede = ?, quarto = ?, valor = ?, data_entrada = ?, data_saida = ? WHERE id_quartoReservado = ?";
+            String query = "UPDATE quartosreservados SET hospede = ?, data_entrada = ?, data_saida = ? WHERE id_quartoReservado = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
 
             // Set the updated values in the prepared statement
             stmt.setString(1, hospede);
-            stmt.setString(2, quarto);
-            stmt.setDouble(3, Double.parseDouble(preco));  // Parse the price to double
-            stmt.setString(4, dataEntrada);
-            stmt.setString(5, dataSaida);
-            stmt.setInt(6, id);  // Set the reservation ID
+            stmt.setString(2, dataEntrada);
+            stmt.setString(3, dataSaida);
+            stmt.setInt(4, id);  // Set the reservation ID
 
             stmt.executeUpdate();  // Execute the update query
         } catch (Exception ex) {
