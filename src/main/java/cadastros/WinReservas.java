@@ -94,7 +94,7 @@ public class WinReservas extends javax.swing.JFrame {
                             qr.deletarQuartoReservado(quartoId);  // Usando o ID do quarto, não o número
 
                             listaQuartos();  // Atualiza a lista de quartos
-
+                            listaReservas();
                             // Remove a linha da tabela de reservas
                             DefaultTableModel model = (DefaultTableModel) JTreservas.getModel();
                             model.removeRow(selectedRow);

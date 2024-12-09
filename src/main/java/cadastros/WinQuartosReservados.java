@@ -191,8 +191,12 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     public void listaQuartosReservados() {
         Connection conn = Database.getConnection();
         try {
-            // SQL query to fetch the reserved rooms
-            String sql = "SELECT id_quartoReservado, hospede, quarto, valor, data_entrada, data_saida FROM quartosreservados";
+            // SQL query with JOIN to fetch room number from 'quartos' table
+            String sql = "SELECT qr.id_quartoReservado, qr.hospede, q.numero AS numero_quarto, "
+                    + "qr.valor, qr.data_entrada, qr.data_saida "
+                    + "FROM quartosreservados qr "
+                    + "JOIN quartos q ON qr.quarto = q.id_quarto"; // Assuming 'quarto' in 'quartosreservados' is the foreign key to 'id_quarto' in 'quartos'
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();  // Execute the query
 
@@ -202,17 +206,17 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             while (rs.next()) {
                 int id_QR = rs.getInt("id_quartoReservado");
                 String hospede = rs.getString("hospede");
-                String quarto = rs.getString("quarto");
+                int numeroQuarto = rs.getInt("numero_quarto"); // Get the room number
                 double valor = rs.getDouble("valor");
                 String dataEntrada = rs.getString("data_entrada");
                 String dataSaida = rs.getString("data_saida");
-                
+
                 var r = new Reservas();
                 int hpdint = Integer.parseInt(hospede);
                 String nomeHospede = r.getNomeHospedeById(hpdint);
 
                 // Add the row to the table
-                tabelaQuartosReservados.addRow(new Object[]{id_QR, nomeHospede, "N°" + quarto, "R$" + valor, dataEntrada, dataSaida});
+                tabelaQuartosReservados.addRow(new Object[]{id_QR, nomeHospede, "N°" + numeroQuarto, "R$" + valor, dataEntrada, dataSaida});
             }
         } catch (Exception e) {
             e.printStackTrace();

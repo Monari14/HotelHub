@@ -69,6 +69,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
                     // Update the database with the modified row data
                     atualizarPelaTabelaQ(id, tipo, preco);
+                    JOptionPane.showMessageDialog(null, "Quarto atualizado com sucesso!");
                     listaQuartos();
                 }
             }
@@ -77,30 +78,32 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    int selectedRow = JTquartos.getSelectedRow(); // Get the selected row
-                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
-                    if (resposta == JOptionPane.YES_OPTION) {
-                        if (selectedRow != -1) {
-                            // Get the ID of the selected row (assuming the ID is in the first column)
-                            int id = Integer.parseInt(JTquartos.getValueAt(selectedRow, 0).toString()); // ID in the first column
+                    int selectedRow = JTquartos.getSelectedRow(); // Obter a linha selecionada
+                    if (selectedRow != -1) {
+                        int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
+                        if (resposta == JOptionPane.YES_OPTION) {
+                            int id = Integer.parseInt(JTquartos.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
+                            String disponibilidade = JTquartos.getValueAt(selectedRow, 4).toString(); // Disponibilidade na coluna 5
 
-                            // Delete the item from the database
+                            // if indisponível dont exclui
+                            if (disponibilidade.equalsIgnoreCase("Indisponível")) {
+                                JOptionPane.showMessageDialog(null, "Este quarto está reservado!");
+                                return;
+                            }
+
                             excluirPelaTabelaQ(id);
 
-                            // Remove the row from the table
                             DefaultTableModel model = (DefaultTableModel) JTquartos.getModel();
                             model.removeRow(selectedRow);
 
-                            // Show a success message or update the interface
                             listaQuartos();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
                     }
                 }
             }
-        }
-        );
+        });
 
         // Listener for changes in the table
         tabelaServicos.addTableModelListener(
@@ -126,6 +129,7 @@ public class WinQuartosServicos extends javax.swing.JFrame {
 
                     // Update the database with the modified row data
                     atualizarPelaTabelaS(id, tipo, preco);
+                    JOptionPane.showMessageDialog(null, "Serviço atualizado com sucesso!");
                     listaServicos();
                 }
             }
@@ -376,7 +380,9 @@ public class WinQuartosServicos extends javax.swing.JFrame {
             stmt.setInt(3, id);           // Set the room ID
 
             int rowsAffected = stmt.executeUpdate();  // Execute the update query
-            if (rowsAffected > 0) {} else {} //se true atualizou
+            if (rowsAffected > 0) {
+            } else {
+            } //se true atualizou
 
         } catch (SQLException ex) {
             ex.printStackTrace();

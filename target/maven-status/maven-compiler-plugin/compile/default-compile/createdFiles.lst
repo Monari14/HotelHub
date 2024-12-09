@@ -36,7 +36,6 @@ adm\WinAdmLogado$5.class
 cadastros\WinPagamentos$3.class
 adm\WinListaFuncionarios$1.class
 cadastros\WinQuartosServicos.class
-home\HotelHubInitial$4.class
 adm\WinAdmLogado.class
 home\HotelHubLogado$5.class
 adm\WinListaHospedes$1.class
@@ -53,7 +52,6 @@ adm\WinAdmLogado$4.class
 adm\WinListaFuncionarios$2.class
 home\HotelHubLogado$1.class
 Database\Database.class
-adm\WinListaHospedes$5.class
 cadastros\WinReservas$4.class
 cadastros\CadastroUser.class
 cadastros\WinReservas.class

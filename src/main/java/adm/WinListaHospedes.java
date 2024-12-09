@@ -49,34 +49,6 @@ public class WinListaHospedes extends javax.swing.JFrame {
                 }
             }
         });
-        hospedes.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    int selectedRow = hospedes.getSelectedRow(); // Obtém a linha selecionada
-                    String nome = tabelaHospedes.getValueAt(selectedRow, 1).toString();
-                    int resposta = JOptionPane.showConfirmDialog(rootPane, "Você realmente deseja excluir o hóspede " + nome + "?", "Excluir", JOptionPane.YES_NO_OPTION);
-                    if (resposta == JOptionPane.YES_OPTION) {
-                        if (selectedRow != -1) {
-                            // Pegando o ID da linha selecionada (assumindo que o ID esteja na primeira coluna)
-                            int id = Integer.parseInt(hospedes.getValueAt(selectedRow, 0).toString()); // ID na primeira coluna
-
-                            // Excluindo o item do banco de dados
-                            excluirPelaTabelaH(id);
-
-                            // Removendo a linha da tabela
-                            DefaultTableModel model = (DefaultTableModel) hospedes.getModel();
-                            model.removeRow(selectedRow);
-
-                            // Exibir uma mensagem de sucesso ou atualizar a interface
-                            JOptionPane.showMessageDialog(null, "Hóspede excluído!");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Selecione uma linha para excluir.");
-                        }
-                    }
-                }
-            }
-        });
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -183,25 +155,6 @@ public class WinListaHospedes extends javax.swing.JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());  // Show error if something goes wrong
-        }
-    }
-
-    // EXCLUSÕES NA TABELA E DELETES NO BANCO
-    private static void excluirPelaTabelaH(int id) {
-        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
-            String query = "DELETE FROM hospedes WHERE id_hospede = ?";  // SQL para excluir com base no id_sabor
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setInt(1, id);  // Define o valor do placeholder (id)
-
-            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
-
-            if (rowsAffected > 0) {
-            } else {
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
         }
     }
 

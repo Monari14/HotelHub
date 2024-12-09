@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 08/12/2024 às 20:46
+-- Tempo de geração: 09/12/2024 às 21:03
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -36,6 +36,10 @@ CREATE TABLE `hospedes` (
   `quemCadastrou` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `hospedes`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -49,6 +53,10 @@ CREATE TABLE `quartos` (
   `preco` double DEFAULT NULL,
   `disponivel` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `quartos`
+--
 
 -- --------------------------------------------------------
 
@@ -65,6 +73,10 @@ CREATE TABLE `quartosreservados` (
   `data_saida` varchar(255) DEFAULT NULL,
   `id_reserva` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `quartosreservados`
+--
 
 -- --------------------------------------------------------
 
@@ -83,6 +95,10 @@ CREATE TABLE `reservas` (
   `metodo_pagamento` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `reservas`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +110,10 @@ CREATE TABLE `servicos` (
   `tipo` varchar(255) DEFAULT NULL,
   `preco` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `servicos`
+--
 
 -- --------------------------------------------------------
 
@@ -109,6 +129,10 @@ CREATE TABLE `usuarios` (
   `senha` varchar(255) DEFAULT NULL,
   `is_adm` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `usuarios`
+--
 
 --
 -- Índices para tabelas despejadas
@@ -163,37 +187,37 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `hospedes`
 --
 ALTER TABLE `hospedes`
-  MODIFY `id_hospede` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_hospede` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de tabela `quartos`
 --
 ALTER TABLE `quartos`
-  MODIFY `id_quarto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_quarto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de tabela `quartosreservados`
 --
 ALTER TABLE `quartosreservados`
-  MODIFY `id_quartoReservado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_quartoReservado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de tabela `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de tabela `servicos`
 --
 ALTER TABLE `servicos`
-  MODIFY `id_servico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_servico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- Restrições para tabelas despejadas
