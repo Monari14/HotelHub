@@ -5,7 +5,6 @@ import cadastros.WinQuartosReservados;
 import cadastros.WinQuartosServicos;
 import cadastros.WinReservas;
 import home.HotelHubInitial;
-import home.HotelHubLogado;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -33,10 +32,11 @@ public class WinAdmLogado extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        addAdm = new javax.swing.JMenuItem();
+        listaFuncionarios = new javax.swing.JMenuItem();
+        listaHospedes = new javax.swing.JMenuItem();
         quartos = new javax.swing.JMenuItem();
         reservas = new javax.swing.JMenuItem();
         quartosReservados = new javax.swing.JMenuItem();
@@ -48,11 +48,11 @@ public class WinAdmLogado extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setIcon(new javax.swing.JLabel() {
+        jLabel2.setIcon(new javax.swing.JLabel() {
             public javax.swing.Icon getIcon() {
                 try {
                     return new javax.swing.ImageIcon(
-                        new java.net.URL("file:/C:/Users/FELIPEEDUARDOMONARI/Documents/NetBeansProjects/HotelHub-main/images/logo-hoteo.png")
+                        new java.net.URL("file:/C:/Users/monari/Documents/NetBeansProjects/HotelHub-aaaa/images/logo-hoteo.png")
                     );
                 } catch (java.net.MalformedURLException e) {
                 }
@@ -64,28 +64,36 @@ public class WinAdmLogado extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(jLabel1)
-                .addContainerGap(114, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(126, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(102, 102, 102))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(jLabel1)
-                .addContainerGap(130, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(135, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(125, 125, 125))
         );
 
         jMenu1.setText("HotelHub");
 
-        addAdm.setText("Lista de Funcionários");
-        addAdm.addActionListener(new java.awt.event.ActionListener() {
+        listaFuncionarios.setText("Lista de Funcionários");
+        listaFuncionarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addAdmActionPerformed(evt);
+                listaFuncionariosActionPerformed(evt);
             }
         });
-        jMenu1.add(addAdm);
+        jMenu1.add(listaFuncionarios);
+
+        listaHospedes.setText("Lista de Hóspedes");
+        listaHospedes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listaHospedesActionPerformed(evt);
+            }
+        });
+        jMenu1.add(listaHospedes);
 
         quartos.setText("Quartos e Serviços");
         quartos.addActionListener(new java.awt.event.ActionListener() {
@@ -155,11 +163,11 @@ public class WinAdmLogado extends javax.swing.JFrame {
         desconect();
     }//GEN-LAST:event_desconectarActionPerformed
 
-    private void addAdmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdmActionPerformed
+    private void listaFuncionariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listaFuncionariosActionPerformed
         JFrame j = new WinListaFuncionarios(); // Open room management
         j.setVisible(true);
         j.setLocationRelativeTo(null);
-    }//GEN-LAST:event_addAdmActionPerformed
+    }//GEN-LAST:event_listaFuncionariosActionPerformed
 
     private void quartosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quartosActionPerformed
         JFrame j = new WinQuartosServicos(); // Open room management
@@ -179,6 +187,12 @@ public class WinAdmLogado extends javax.swing.JFrame {
         j.setLocationRelativeTo(null);
     }//GEN-LAST:event_quartosReservadosActionPerformed
 
+    private void listaHospedesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listaHospedesActionPerformed
+        JFrame j = new WinListaHospedes(); // Open room management
+        j.setVisible(true);
+        j.setLocationRelativeTo(null);
+    }//GEN-LAST:event_listaHospedesActionPerformed
+
     // Method to handle the disconnect action
     public void desconect() {
         // Show a confirmation dialog asking if the user wants to disconnect
@@ -187,11 +201,13 @@ public class WinAdmLogado extends javax.swing.JFrame {
         // If the user confirms disconnect, show a success message and open the login screen
         if (resposta == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(rootPane, "Desconectado com sucesso!");  // Success message
+            this.dispose();
             JFrame j = new HotelHubInitial();  // Open the initial login screen
             j.setVisible(true);
             j.setLocationRelativeTo(null);  // Center the window on the screen
         } else {
             // If the user cancels, reopen the logged-in screen
+            this.dispose();
             JFrame j = new WinAdmLogado();
             j.setVisible(true);
             j.setLocationRelativeTo(null);  // Center the window on the screen
@@ -234,13 +250,14 @@ public class WinAdmLogado extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem addAdm;
     private javax.swing.JMenuItem desconectar;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JMenuItem listaFuncionarios;
+    private javax.swing.JMenuItem listaHospedes;
     private javax.swing.JMenuItem quartos;
     private javax.swing.JMenuItem quartosReservados;
     private javax.swing.JMenuItem reservas;

@@ -1,6 +1,10 @@
 package cadastros;
 
+import Classes.Quartos;
+import Classes.Reservas;
 import Database.Database;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,22 +29,34 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         tabelaQuartosReservados.addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE) {  // Check if the table data was updated
-                    int row = e.getFirstRow();  // Get the updated row index
+                if (e.getType() == TableModelEvent.UPDATE) {  // Verifica se os dados da tabela foram atualizados
+                    int row = e.getFirstRow();  // Obtém o índice da linha atualizada
 
-                    // Get the updated values from the row
-                    int id = Integer.parseInt(tabelaQuartosReservados.getValueAt(row, 0).toString());  // ID (first column)
-                    String hospede = tabelaQuartosReservados.getValueAt(row, 1).toString();  // Guest (second column)
-                    String quarto = tabelaQuartosReservados.getValueAt(row, 2).toString().replace("N°", "");  // Room number (remove "N°")
-                    String valor = tabelaQuartosReservados.getValueAt(row, 3).toString().replace("R$", "");  // Price (remove "R$")
-                    String entrada = tabelaQuartosReservados.getValueAt(row, 4).toString();  // Check-in date
-                    String saida = tabelaQuartosReservados.getValueAt(row, 5).toString();  // Check-out date
+                    // Obtém os valores atualizados da linha
+                    int id = Integer.parseInt(tabelaQuartosReservados.getValueAt(row, 0).toString());  // ID (primeira coluna)
+                    String hospede = tabelaQuartosReservados.getValueAt(row, 1).toString();  // Nome do hóspede (segunda coluna)
+                    String quarto = tabelaQuartosReservados.getValueAt(row, 2).toString().replace("N°", "");  // Número do quarto (remove "N°")
+                    String valor = tabelaQuartosReservados.getValueAt(row, 3).toString().replace("R$", "");  // Preço (remove "R$")
+                    String entrada = tabelaQuartosReservados.getValueAt(row, 4).toString();  // Data de check-in
+                    String saida = tabelaQuartosReservados.getValueAt(row, 5).toString();  // Data de check-out
 
-                    // Update the database with the modified row data
-                    atualizarPelaTabelaQR(id, hospede, quarto, valor, entrada, saida);
+                    atualizarPelaTabelaQR(id, entrada, saida);
+                    listaQuartosReservados();
                 }
             }
         });
+
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    listaQuartosReservados();
+                }
+            }
+        });
+
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
 
     @SuppressWarnings("unchecked")
@@ -48,17 +64,16 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane2 = new javax.swing.JScrollPane();
-        quartosReservados = new javax.swing.JTable();
+        JTQuarRes = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        quartosReservados.setModel(tabelaQuartosReservados);
-        jScrollPane2.setViewportView(quartosReservados);
+        JTQuarRes.setModel(tabelaQuartosReservados);
+        jScrollPane2.setViewportView(JTQuarRes);
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -66,7 +81,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("QUARTOS RESERVADOS");
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\WESLEYLUCASMOREIRA\\Documents\\mini hotel.jpg")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-aaaa\\images\\loguilho-hotilho.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -75,9 +90,7 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 302, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addContainerGap())
         );
@@ -85,8 +98,6 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(21, 21, 21)
                 .addComponent(jLabel5)
                 .addGap(32, 32, 32))
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -108,38 +119,71 @@ public class WinQuartosReservados extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 251, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 263, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(78, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(71, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // Method to update room reservation data in the database
-    private static void atualizarPelaTabelaQR(int id, String hospede, String quarto, String preco, String dataEntrada, String dataSaida) {
+    private static void atualizarPelaTabelaQR(int id, String dataEntrada, String dataSaida) {
         try (Connection conn = Database.getConnection()) {
             // SQL query to update room reservation
-            String query = "UPDATE quartosreservados SET hospede = ?, quarto = ?, valor = ?, data_entrada = ?, data_saida = ? WHERE id_quartoReservado = ?";
+            String query = "UPDATE quartosreservados SET data_entrada = ?, data_saida = ? WHERE id_quartoReservado = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
 
             // Set the updated values in the prepared statement
-            stmt.setString(1, hospede);
-            stmt.setString(2, quarto);
-            stmt.setDouble(3, Double.parseDouble(preco));  // Parse the price to double
-            stmt.setString(4, dataEntrada);
-            stmt.setString(5, dataSaida);
-            stmt.setInt(6, id);  // Set the reservation ID
+            stmt.setString(1, dataEntrada);
+            stmt.setString(2, dataSaida);
+            stmt.setInt(3, id);  // Set the reservation ID
 
             stmt.executeUpdate();  // Execute the update query
-            System.out.println("Dados atualizados no banco de dados!");  // Print success message
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados: " + ex.getMessage());  // Show error if something goes wrong
+        }
+    }
+
+    // EXCLUSÕES NA TABELA E DELETES NO BANCO
+    private static void excluirPelaTabelaQR(int id) {
+        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
+            String query = "DELETE FROM quartosreservados WHERE id_quartoReservado = ?";  // SQL para excluir com base no id_sabor
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);  // Define o valor do placeholder (id)
+
+            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+
+            if (rowsAffected > 0) {
+            } else {
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
+        }
+    }
+
+    private static void excluirPelaTabelaF(String numeroQuarto) {
+        try (Connection conn = Database.getConnection()) {  // Obtém conexão com o banco
+            String query = "DELETE FROM reservas WHERE quarto LIKE ?";  // SQL para excluir com base no número do quarto
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, "%N°" + numeroQuarto + "%");  // Define o valor do placeholder (número do quarto)
+
+            int rowsAffected = stmt.executeUpdate();  // Executa a query e retorna o número de linhas afetadas
+
+            if (rowsAffected > 0) {
+                System.out.println("Reserva excluída com sucesso.");
+            } else {
+                System.out.println("Nenhuma reserva encontrada para o quarto " + numeroQuarto);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao excluir do banco de dados: " + ex.getMessage());
         }
     }
 
@@ -147,8 +191,12 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     public void listaQuartosReservados() {
         Connection conn = Database.getConnection();
         try {
-            // SQL query to fetch the reserved rooms
-            String sql = "SELECT id_quartoReservado, hospede, quarto, valor, data_entrada, data_saida FROM quartosreservados";
+            // SQL query with JOIN to fetch room number from 'quartos' table
+            String sql = "SELECT qr.id_quartoReservado, qr.hospede, q.numero AS numero_quarto, "
+                    + "qr.valor, qr.data_entrada, qr.data_saida "
+                    + "FROM quartosreservados qr "
+                    + "JOIN quartos q ON qr.quarto = q.id_quarto"; // Assuming 'quarto' in 'quartosreservados' is the foreign key to 'id_quarto' in 'quartos'
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();  // Execute the query
 
@@ -158,13 +206,17 @@ public class WinQuartosReservados extends javax.swing.JFrame {
             while (rs.next()) {
                 int id_QR = rs.getInt("id_quartoReservado");
                 String hospede = rs.getString("hospede");
-                String quarto = rs.getString("quarto");
+                int numeroQuarto = rs.getInt("numero_quarto"); // Get the room number
                 double valor = rs.getDouble("valor");
                 String dataEntrada = rs.getString("data_entrada");
                 String dataSaida = rs.getString("data_saida");
 
+                var r = new Reservas();
+                int hpdint = Integer.parseInt(hospede);
+                String nomeHospede = r.getNomeHospedeById(hpdint);
+
                 // Add the row to the table
-                tabelaQuartosReservados.addRow(new Object[]{id_QR, hospede, "N°" + quarto, "R$" + valor, dataEntrada, dataSaida});
+                tabelaQuartosReservados.addRow(new Object[]{id_QR, nomeHospede, "N°" + numeroQuarto, "R$" + valor, dataEntrada, dataSaida});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,11 +228,10 @@ public class WinQuartosReservados extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable JTQuarRes;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable quartosReservados;
     // End of variables declaration//GEN-END:variables
 }

@@ -47,7 +47,6 @@ public class HotelHubInitial extends javax.swing.JFrame {
     // Constructor initializes the UI and checks the database connection.
     public HotelHubInitial() {
         initComponents();
-        setTitle("Hotelaria"); // Set the window title.
         Connection conn = Database.getConnection(); // Get the database connection.
 
         if (conn == null) { // If the connection fails, show an error message and exit.
@@ -72,7 +71,7 @@ public class HotelHubInitial extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\FELIPEEDUARDOMONARI\\Documents\\NetBeansProjects\\HotelHub-main\\images\\logo-hoteo.png")); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\monari\\Documents\\NetBeansProjects\\HotelHub-aaaa\\images\\logo-hoteo.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -121,9 +120,9 @@ public class HotelHubInitial extends javax.swing.JFrame {
 
     // Event handler for the "Cadastro User" menu item.
     private void cadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastroActionPerformed
-        JFrame j = new CadastroUser(); // Open the user registration window.
+        CadastroUser j = new CadastroUser(this); // Open the user registration window.
         j.setVisible(true);
-        j.setLocationRelativeTo(null); // Center the new window.
+        j.setLocationRelativeTo(null);
     }//GEN-LAST:event_cadastroActionPerformed
 
     // Event handler for the "Login User" menu item.

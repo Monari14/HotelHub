@@ -5,7 +5,6 @@ import Sexao.Sexsao;
 import adm.WinAdmLogado;
 import cadastros.CadastroUser;
 import helpers.KeyboardHelper;
-import home.HotelHubInitial;
 import home.HotelHubLogado;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,15 +19,6 @@ public class LoginUser extends javax.swing.JDialog {
     public LoginUser(java.awt.Frame parent) {
         super(parent, true);
         initComponents();  // Initialize GUI components
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            // When the window is closed, open the initial hotel hub screen
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new HotelHubInitial();
-                j.setVisible(true);
-                j.setLocationRelativeTo(null);  // Center the window
-            }
-        });
-
         // Set enter key to press the login button
         KeyboardHelper kh = new KeyboardHelper(rootPane);
         kh.setConfirmButton(btLogin);
@@ -60,7 +50,7 @@ public class LoginUser extends javax.swing.JDialog {
 
         btLogin.setBackground(new java.awt.Color(255, 153, 0));
         btLogin.setForeground(new java.awt.Color(0, 0, 0));
-        btLogin.setText("Cadastrar");
+        btLogin.setText("Logar");
         btLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btLoginActionPerformed(evt);
@@ -192,10 +182,10 @@ public class LoginUser extends javax.swing.JDialog {
     }
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
-        this.dispose(); // Close current window
-        JFrame j = new CadastroUser(); // Open cadastro window
+        this.dispose();  // Close the current window
+        CadastroUser j = new CadastroUser(null);  // Open the login window
         j.setVisible(true);
-        j.setLocationRelativeTo(null);
+        j.setLocationRelativeTo(null);  // Center the window
     }//GEN-LAST:event_userActionPerformed
 
     private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed

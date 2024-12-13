@@ -2,7 +2,10 @@ package cadastros;
 
 import Classes.Usuarios;
 import Database.Database;
+import Sexao.Sexsao;
+import adm.WinAdmLogado;
 import home.HotelHubInitial;
+import home.HotelHubLogado;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,17 +18,14 @@ import logins.LoginUser;
 
 public class CadastroUser extends javax.swing.JFrame {
 
+    private boolean deuOk = false;
+
     // Constructor to initialize the window and set closing behavior
-    public CadastroUser() {
-        initComponents();
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            // When the window is closed, open the initial hotel hub screen
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                JFrame j = new HotelHubInitial();
-                j.setVisible(true);
-                j.setLocationRelativeTo(null);  // Center the window
-            }
-        });
+    private HotelHubInitial hotelHubInitial; // Referência para HotelHubInitial
+
+    public CadastroUser(HotelHubInitial hotelHubInitial) {
+        this.hotelHubInitial = hotelHubInitial;
+        initComponents(); // Inicializa os componentes da janela
     }
 
     @SuppressWarnings("unchecked")
@@ -175,6 +175,10 @@ public class CadastroUser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadastroActionPerformed
+        cadastrar();
+    }//GEN-LAST:event_btCadastroActionPerformed
+
+    private void cadastrar() {
         String nome = edtNome.getText().trim();  // Get the name input from the user
         String idadeS = edtIdade.getText().trim();  // Get the age input from the user
         String cpf = edtCPF.getText().trim();  // Get the CPF input from the user
@@ -188,6 +192,12 @@ public class CadastroUser extends javax.swing.JFrame {
         // Check if the CPF is already registered
         if (usuarioExist(cpf)) {
             JOptionPane.showMessageDialog(this, "O CPF " + cpf + " já está cadastrado.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JFrame a = new HotelHubInitial(); // Open the user registration window.
+            a.setVisible(true);
+            a.setLocationRelativeTo(null);
+            JFrame j = new CadastroUser(null); // Open the user registration window.
+            j.setVisible(true);
+            j.setLocationRelativeTo(null);
             return;
         }
 
@@ -199,58 +209,147 @@ public class CadastroUser extends javax.swing.JFrame {
             // Insert user into the database
             if (u.inserirUser(nome, idade, cpf, senha)) {
                 JOptionPane.showMessageDialog(this, "Funcionário " + nome + " cadastrado com sucesso.");
+                // Authenticate the user using CPF and password
+                Object[] authResult = autenticarUsuario(cpf, senha);
+                boolean autenticado = (boolean) authResult[0];  // True if authenticated
+                boolean isAdm = (boolean) authResult[1];  // True if the user is an administrator
+
+                // If authenticated, proceed to the correct screen
+                if (autenticado) {
+                    Sexsao.setUsuarioLogado(cpf);  // Set the logged-in user
+                    this.dispose();  // Close the login window
+
+                    JFrame j;
+                    // Redirect based on user role (Admin or regular user)
+                    if (isAdm) {
+                        j = new WinAdmLogado();  // Admin screen
+                    } else {
+                        j = new HotelHubLogado();  // Regular user screen
+                    }
+                    j.setVisible(true);
+                    j.setLocationRelativeTo(null);  // Center the window
+                    deuOk = true;
+                    if (hotelHubInitial != null) {
+                        hotelHubInitial.dispose();
+                        dispose();
+                    }
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao cadastrar o funcionário.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao converter idade.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btCadastroActionPerformed
+    }
 
-    // Method to validate the input fields
+    private Object[] autenticarUsuario(String usuario, String senha) {
+        Connection conn = Database.getConnection();  // Get database connection
+        Object[] resultado = {false, false};  // First value: authentication status, second: is_adm status
+
+        try {
+            // SQL query to check if the user exists and if the password matches
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT is_adm FROM usuarios WHERE (nome = ? OR cpf = ?) AND senha = ?");
+            stmt.setString(1, usuario);  // Set username
+            stmt.setString(2, usuario);  // Set CPF
+            stmt.setString(3, senha);    // Set password
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                resultado[0] = true;  // User authenticated
+                resultado[1] = rs.getBoolean("is_adm");  // Set user role (admin or not)
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();  // Print exception if any error occurs
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();  // Close the database connection
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();  // Print exception if closing fails
+            }
+        }
+
+        return resultado;  // Return the authentication result
+    }
+
     private boolean validateInputs(String nome, String idadeS, String cpf, String senha) {
-        // Check if any fields are empty
-        if (nome.isEmpty() || idadeS.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos!", "Atenção", JOptionPane.WARNING_MESSAGE);
+        // Verifica campos vazios
+        if (nome == null || nome.isBlank() || idadeS == null || idadeS.isBlank()
+                || cpf == null || cpf.isBlank() || senha == null || senha.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Todos os campos devem ser preenchidos.", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
-        // Validate the name length
-        if (nome.length() < 3) {
-            JOptionPane.showMessageDialog(this, "Insira um nome válido.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        // Valida nome (mínimo 3 caracteres, só letras e espaços)
+        if (nome.length() < 3 || !nome.matches("[a-zA-ZÀ-ÿ\\s]+")) {
+            JOptionPane.showMessageDialog(this, "Insira um nome válido (mínimo 3 caracteres, apenas letras).", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
-        // Validate if age is a valid number
+        // Valida idade (número positivo, maior ou igual a 18)
         if (!idadeS.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "Idade deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "A idade deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         int idade = Integer.parseInt(idadeS);
         if (idade < 18) {
-            JOptionPane.showMessageDialog(this, "Idade deve ser maior que 18 anos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "A idade deve ser 18 anos ou mais.", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // Validate CPF length
-        if (cpf.length() < 14 || cpf.length() > 14) {
-            JOptionPane.showMessageDialog(this, "Insira um CPF válido.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        // Remove pontos e hífen do CPF para validação
+        String cpfNumerico = cpf.replace(".", "").replace("-", "");
+
+        // Valida CPF (11 dígitos e formato válido)
+        if (!cpfNumerico.matches("\\d{11}")) {
+            JOptionPane.showMessageDialog(this, "O CPF deve conter exatamente 11 dígitos numéricos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!isValidCPF(cpfNumerico)) {
+            JOptionPane.showMessageDialog(this, "O CPF inserido é inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // Validate password length and check for spaces
+        // Valida senha (mínimo 6 caracteres, sem espaços)
         if (senha.length() < 6) {
-            JOptionPane.showMessageDialog(this, "A senha deve ter pelo menos 6 caracteres.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "A senha deve conter no mínimo 6 caracteres.", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (senha.isBlank()) {
+        if (senha.contains(" ")) {
             JOptionPane.showMessageDialog(this, "A senha não pode conter espaços.", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        return true;  // Return true if all validations pass
+        return true;
     }
+
+// Valida CPF com cálculo dos dígitos verificadores
+    private boolean isValidCPF(String cpf) {
+        int[] pesos1 = {10, 9, 8, 7, 6, 5, 4, 3, 2};
+        int[] pesos2 = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
+
+        try {
+            int soma = 0;
+            for (int i = 0; i < 9; i++) {
+                soma += Character.getNumericValue(cpf.charAt(i)) * pesos1[i];
+            }
+            int digito1 = (soma % 11 < 2) ? 0 : 11 - (soma % 11);
+
+            soma = 0;
+            for (int i = 0; i < 10; i++) {
+                soma += Character.getNumericValue(cpf.charAt(i)) * pesos2[i];
+            }
+            int digito2 = (soma % 11 < 2) ? 0 : 11 - (soma % 11);
+
+            return digito1 == Character.getNumericValue(cpf.charAt(9))
+                    && digito2 == Character.getNumericValue(cpf.charAt(10));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
         this.dispose();  // Close the current window
@@ -300,7 +399,7 @@ public class CadastroUser extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CadastroUser().setVisible(true);
+                new CadastroUser(null).setVisible(true);
             }
         });
     }
